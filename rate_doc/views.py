@@ -17,13 +17,7 @@ from .models import Doc
 class DocUpdate(UpdateView):
     model = Doc
     fields = [
-        'articleTopic',
-        'productName',
-        'companyName',
-        'dateOfApprovalOrLaunch',
-        'countryOfLaunch',
-        'otherCompanies',
-        'otherProducts',
+        'report',
         ]
         
     template_name = "rate_doc/doc_edit.html"
@@ -42,16 +36,20 @@ class DocList(ListView):
 
 def get_next(request):
 
-    assigned_doc = Doc.objects.filter(rated=False).filter(assignedTo=request.user.pk)
-    if assigned_doc:
-        doc = assigned_doc.first()
-    else:
-        doc = Doc.objects.filter(rated=False,assignedTo=None).first()
-        doc.assignedTo = request.user
-        doc.save()
+    unrated_docs = Doc.objects.filter(rated=False)
+    assigned_docs = unrated_docs.filter(assignedTo=request.user.pk)
     
-    return HttpResponseRedirect(reverse('rate-doc', kwargs={'pk':doc.pk}))
-
+    if unrated_docs:
+        if assigned_docs:
+            doc = assigned_docs.first()
+        else:
+            doc = Doc.objects.filter(rated=False,assignedTo=None).first()
+            doc.assignedTo = request.user
+            doc.save()
+        
+        return HttpResponseRedirect(reverse('rate-doc', kwargs={'pk':doc.pk}))
+        
+    return HttpResponseRedirect(reverse('index'))
     
 def Export(request):
     

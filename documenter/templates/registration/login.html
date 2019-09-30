@@ -2,13 +2,9 @@
 {% load staticfiles crispy_forms_tags %}
 
 {% block content %}
-
-<div class="form-container">
-<img style="display: inline-block;" src="{% static 'img/sdal-logo.png' %}" alt="">
-<br>
-  <h4>Sign In</h4>
-  <br>
-  <form class="form-group" method="post">
+<div class="h-50 align-self-center form-container">
+	<img class="img img-fluid" style="display: inline-block;" src="{% static 'img/sdal-logo.png' %}" alt="">
+  <form class="form-group pt-5" method="post">
     {% csrf_token %}
     <div id="div_id_username" class="control-group"> 
         <div class="controls"> 

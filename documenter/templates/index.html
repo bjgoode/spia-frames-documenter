@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Documenter
+{% endblock %}
+
+{% block content %}
+<div class="col-4">
+    <h4>Que:</h4>
+    {% for doc in docs.objects.all %}
+    {% empty %}
+        No Documents to Review.
+    {% endfor %}
+</div>
+<div class="col-8">
+    <h4>Documenter.</h4>
+</div>
+{% endblock %}
