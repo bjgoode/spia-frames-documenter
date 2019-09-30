@@ -17,8 +17,8 @@ root = environ.Path(__file__) - 2
 env = environ.Env()
 env.read_env(root('.env'))
 
-SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG') == 'True'
+SECRET_KEY = env('SECRET_KEY')
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -29,10 +29,10 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '9_(t7+=dd2vlq)gqo71u67u6)a$%9gj8&q$3r490jbx)l*%2y8'
+# SECRET_KEY = '9_(t7+=dd2vlq)gqo71u67u6)a$%9gj8&q$3r490jbx)l*%2y8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
