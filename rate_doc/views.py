@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 
@@ -11,6 +11,7 @@ from django.urls import reverse
 import csv
 
 from .models import Doc
+from .forms import *
 
 # Create your views here.
 
@@ -28,6 +29,27 @@ class DocUpdate(UpdateView):
         form.save()
         return HttpResponseRedirect(reverse('get-next'))
 
+
+def edit_doc(request, pk):
+    if request.method == "POST":
+        return HttpResponseRedirect(reverse('get-next'))
+        
+    else:
+        doc = Doc.objects.get(pk=pk)        
+        
+        report_form = ReportForm(instance=doc.report)
+        reportSource_form = ReportSourceForm()
+        appeal_form = AppealForm
+        
+        outDict = {
+            'doc': doc,
+            'report_form': report_form,
+            'reportSource_form': reportSource_form,
+            'appeal_form': appeal_form,
+        }      
+        
+    return render_to_response('rate_doc/doc_edit.html', outDict)
+    
 
 class DocList(ListView):
     model = Doc

@@ -13,6 +13,7 @@ from django import forms
 class Affiliation(models.Model):
     name = models.CharField(max_length = 100)
     
+    
 class Appeal(models.Model):
     frame = models.ManyToManyField('Frame')
     source = models.ManyToManyField('Source')
@@ -23,6 +24,9 @@ class Appeal(models.Model):
 
 class Author(models.Model):
     name = models.CharField(max_length = 255)
+    
+    def __str__(self):
+        return self.name
 
 class Expertise(models.Model):
     desc = models.CharField(max_length = 45)
@@ -60,6 +64,9 @@ class ReportSourceAffiliation(models.Model):
 class Source(models.Model):
     name = models.CharField(max_length = 255)
     year_born = models.IntegerField() #add validation
+    
+    def __str__(self):
+        return "{} (b.{})".format(self.name, self.year_born)
 
 # Model for rating users.
 class Doc(models.Model):

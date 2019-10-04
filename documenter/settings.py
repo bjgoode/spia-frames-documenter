@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_pam',
     'djangobower',
-    
+    'django_select2',
+
     'rate_doc',
     'documenter',
 ]

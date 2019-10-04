@@ -9,16 +9,72 @@
 <form method="post">{% csrf_token %}
 
 <div class="row">
+<div class="bg-dark text-light rounded" id="optionBox" style="display: none; z-index: 90000;">
+  <h6>Label text as:</h6>
+  <button class="btn btn-primary btn-sm"><b>Source</b></button>
+  <button class="btn btn-primary btn-sm"><b>Frame</b></button>
+</div>
+
 <div style="overflow-y: auto;" class="col-4 text-secondary ">
-    <p>Article Title</p>
-    <h5>"{{doc.report.title}}"</h5>
-    <hr>
-    <p>Subject</p>
-    <h5>{{doc.subject}}</h5>
-    <hr>
+    <div class="d-flex">
+        <h4 class="pr-1">Report</h4>
+        <button onClick='editReport();' type="button" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Edit</button>
+        <button class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+        <button onClick='showReport();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center" type="button">Cancel</button>
+    </div>
+
+    <div id="report-home">
+        <h6>Title</h6> {{doc.report.title}}
+        <h6>Author</h6> {{doc.report.author}}
+        <h6>Media Organization</h6> {{doc.report.media_org}}
+        <h6>Section</h6> {{doc.report.section}}
+        <h6>Page</h6> {{doc.report.page}}
+    </div>
+    <div id="report-edit" style="display:none;">
+        {{report_form | crispy}}
+    </div>
+
+    <div class="d-flex">
+        <h4 class="pr-1">Document Affiliations(s)</h4>
+        <button class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
+        <button class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+        <button class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
+    </div>
+    <div id="reportSource-home">
+        {% for a in doc.report.affiliation_set %}
+        
+        {% empty %}
+            No Document Affiliations Identified.
+        {% endfor %}    
+    </div>
+
+    <div class="d-flex">
+        <h4 class="pr-1">Document Source(s)</h4>
+        <button class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
+        <button class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+        <button class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
+    </div>
+    <div id="reportSource-home">
+        {% for reportSource in doc.report.reportSource_set %}
+        
+        {% empty %}
+            No Document Sources Identified.
+        {% endfor %}    
+    </div>
+    <div id="reportSource-edit" style="display:none;">
+        {{reportSource_form | crispy}}
+    </div>
+    
+    
+    <div class="d-flex">
+        <h4 class="pr-1">Document Appeal(s)</h4>
+        <button class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
+        <button class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+        <button class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
+    </div>
+    {{appeal_form | crispy}}
    
     <br>
-    <p class="text-primary">    <strong>{{ form | crispy }}</strong> </p>
     <input type="submit" class="btn btn-outline-primary" value="Submit!" /> 
 </div>
 <div style="overflow-y: auto;" class="col-8">
@@ -29,8 +85,48 @@
 unrated
 {% endif %}
 </h3>
-<p class="text-dark p-2">{{doc.report.report_text_html}}</p>
+<h5>Title: {{doc.report.title}}</h5>
+<p id="report-html" class="text-dark">{{doc.report.report_text_html}}</p>
 </div>
 </div>
 </form>
+{% endblock %}
+
+{% block extra_js %}
+{{report_form.media.js}}
+
+<script type="text/javascript" >
+
+$('#report-html').mouseup(function (e) {
+	selectedText = getSelection().toString();
+	$('#optionBox').hide();
+	if (selectedText.length > 0) {
+		console.log(selectedText);
+        $('#optionBox').css({'top':e.pageY-100,'left':e.pageX, 'position':'absolute', 'border':'1px solid black', 'padding':'5px'});
+        $('#optionBox').show();
+	}
+});
+
+function editReport() {
+    $('#report-home').fadeOut(function(){$('#report-edit').fadeIn();});
+    
+}
+
+function showReport() {
+    $('#report-edit').fadeOut(function () {
+    	$('#report-home').fadeIn()
+    	});
+}
+
+</script>
+
+{% endblock %}
+
+{% block extra_css %}
+{{report_form.media.css}}
+<style type="text/css">
+    select {
+        width: 100%;    
+    }
+</style>
 {% endblock %}

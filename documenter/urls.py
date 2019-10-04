@@ -24,5 +24,6 @@ urlpatterns = [
     path('rate_doc/', include('rate_doc.urls')),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('login/', LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('select2/', include('django_select2.urls')),
     path('', TemplateView.as_view(template_name='index.html'), name='index'),
 ]

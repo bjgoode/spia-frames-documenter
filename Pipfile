@@ -17,6 +17,7 @@ six = "==1.11.0"
 whitenoise = "==3.3.1"
 Django = ">=2.0.11"
 lorem = "*"
+django-select2 = "*"
 
 [requires]
 python_version = "3.6"
