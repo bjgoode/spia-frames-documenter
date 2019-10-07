@@ -40,15 +40,17 @@ def edit_doc(request, pk):
         report_form = ReportForm(instance=doc.report)
         reportSource_form = ReportSourceForm()
         appeal_form = AppealForm
+        reportsourceaffiliation_form = ReportSourceAffiliationForm
         
         outDict = {
             'doc': doc,
             'report_form': report_form,
+            'reportsourceaffiliation_form': reportsourceaffiliation_form,
             'reportSource_form': reportSource_form,
             'appeal_form': appeal_form,
         }      
         
-    return render_to_response('rate_doc/doc_edit.html', outDict)
+    return render(request, template_name='rate_doc/doc_edit.html', context=outDict)
     
 
 class DocList(ListView):

@@ -38,6 +38,7 @@
 			    <span class="navbar-toggler-icon"></span>
 			  </button>
 			
+			  {% comment %}
 			  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 			    <ul class="navbar-nav m-auto">
 			      <div class="btn-group">
@@ -47,6 +48,7 @@
 			      </div>
 			    </ul>
 			  </div>
+			  {% endcomment %}
 			  
 			  <div>
 			  	 <ul class="navbar-nav ml-auto">
@@ -62,11 +64,9 @@
 			</nav>
 
 <div class="container-fluid h-100 d-flex flex-column">
-        <main role="main" class="col px-4 flex-grow">
-          <div class="d-flex h-100 justify-content-between flex-wrap px-4 pt-3 pb-2 border-bottom">
+        <main role="main" class="flex-grow">
               {% block js_before_content %}{% endblock %}
               {% block content %}{% endblock %}
-          </div>
         </main>
         <footer class="d-flex" role="footer" style="height: 30px;">
         		<h6 class="pr-5">Created By: Brian J. Goode</h6>

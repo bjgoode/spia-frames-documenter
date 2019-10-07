@@ -74,6 +74,10 @@ class ReportSourceAffiliationForm(forms.ModelForm):
     class Meta:
         model=ReportSourceAffiliation
         fields='__all__'
+        widgets = {
+            'affiliation': TagWidget,
+            'expertise': TagWidget,    
+        }
 
 class SourceForm(forms.ModelForm):
     class Meta:

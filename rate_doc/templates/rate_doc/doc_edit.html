@@ -6,20 +6,22 @@
 {% endblock %}
 
 {% block content %}
-<form method="post">{% csrf_token %}
 
 <div class="row">
 <div class="bg-dark text-light rounded" id="optionBox" style="display: none; z-index: 90000;">
   <h6>Label text as:</h6>
-  <button class="btn btn-primary btn-sm"><b>Source</b></button>
-  <button class="btn btn-primary btn-sm"><b>Frame</b></button>
+  <button onClick="copyDocumentText('Affiliation')" class="btn btn-primary btn-sm" type="button"><b>Affiliation</b></button>
+  <button onClick="copyDocumentText('Source')" class="btn btn-primary btn-sm" type="button"><b>Source</b></button>
+  <button onClick="copyDocumentText('Appeal')" class="btn btn-primary btn-sm" type="button"><b>Appeal</b></button>
 </div>
 
-<div style="overflow-y: auto;" class="col-4 text-secondary ">
+<div style="overflow-y: auto;" class="col-4 h-100 bg-light text-secondary ">
+
+<form id="report-form" method="post">{% csrf_token %}
     <div class="d-flex">
         <h4 class="pr-1">Report</h4>
         <button onClick='editReport();' type="button" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Edit</button>
-        <button class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+        <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
         <button onClick='showReport();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center" type="button">Cancel</button>
     </div>
 
@@ -33,26 +35,30 @@
     <div id="report-edit" style="display:none;">
         {{report_form | crispy}}
     </div>
+</form>
 
     <div class="d-flex">
         <h4 class="pr-1">Document Affiliations(s)</h4>
-        <button class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
-        <button class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
-        <button class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
+        <button type="button" onClick='addAffiliation();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
+        <button type="button" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+        <button type="button" onClick='showAffiliations();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
     </div>
-    <div id="reportSource-home">
+    <div id="affil-home">
         {% for a in doc.report.affiliation_set %}
         
         {% empty %}
             No Document Affiliations Identified.
         {% endfor %}    
     </div>
+    <div id="affil-edit" class="w-100" style="display:none;">
+        {{reportsourceaffiliation_form | crispy}}
+    </div>
 
     <div class="d-flex">
         <h4 class="pr-1">Document Source(s)</h4>
-        <button class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
-        <button class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
-        <button class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
+        <button type="button" onClick='addSource();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
+        <button type="button" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+        <button type="button" onClick='showSources();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
     </div>
     <div id="reportSource-home">
         {% for reportSource in doc.report.reportSource_set %}
@@ -68,11 +74,20 @@
     
     <div class="d-flex">
         <h4 class="pr-1">Document Appeal(s)</h4>
-        <button class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
-        <button class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
-        <button class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
+        <button type="button" onClick='addAppeal();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
+        <button type="button" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+        <button type="button" onClick='showAppeals();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
     </div>
-    {{appeal_form | crispy}}
+    <div id="appeal-home">
+        {% for appeal in doc.report.appeal_set %}
+        
+        {% empty %}
+            No Document Sources Identified.
+        {% endfor %}    
+    </div>
+    <div id="appeal-edit" style="display:none;">
+        {{appeal_form | crispy}}
+    </div>
    
     <br>
     <input type="submit" class="btn btn-outline-primary" value="Submit!" /> 
@@ -86,10 +101,16 @@ unrated
 {% endif %}
 </h3>
 <h5>Title: {{doc.report.title}}</h5>
-<p id="report-html" class="text-dark">{{doc.report.report_text_html}}</p>
+<div id="report-container" style="position: relative;" class="bg-light">
+    <div id="affiliations-bg-html" style="position: absolute; top: 0px;" class="text-bg">{{doc.report.report_text_html|linebreaksbr}}</div>
+    <div id="sources-bg-html" style="position: absolute; top: 0px;" class="text-bg">{{doc.report.report_text_html|linebreaksbr}}</div>
+    <div id="appeals-bg-html" style="position: absolute; top: 0px;" class="text-bg">{{doc.report.report_text_html|linebreaksbr}}</div>
+    <div id="report-html" style="position: absolute; top: 0px;" class="text-dark">{{doc.report.report_text_html|linebreaksbr}}</div>
+</div>
+
 </div>
 </div>
-</form>
+
 {% endblock %}
 
 {% block extra_js %}
@@ -97,14 +118,31 @@ unrated
 
 <script type="text/javascript" >
 
+var highlightedText;
+var range;
+
+function clearSelection(){
+    if (window.getSelection) {window.getSelection().removeAllRanges();}
+    else if (document.selection) {document.selection.empty();}
+}
+
 $('#report-html').mouseup(function (e) {
-	selectedText = getSelection().toString();
+	var selection = getSelection();
+	range = selection.getRangeAt(0);
+	console.log();
+	var selectedText = selection.toString();
 	$('#optionBox').hide();
 	if (selectedText.length > 0) {
-		console.log(selectedText);
+//		console.log(selectedText);
         $('#optionBox').css({'top':e.pageY-100,'left':e.pageX, 'position':'absolute', 'border':'1px solid black', 'padding':'5px'});
         $('#optionBox').show();
+        highlightedText = selectedText;
 	}
+});
+
+$('#optionBox').mouseup(function (e) {
+	$(this).hide();
+	clearSelection();
 });
 
 function editReport() {
@@ -113,11 +151,76 @@ function editReport() {
 }
 
 function showReport() {
-    $('#report-edit').fadeOut(function () {
-    	$('#report-home').fadeIn()
-    	});
+    $('#report-edit').fadeOut(function (){$('#report-home').fadeIn()});
 }
 
+function addAffiliation() {
+    $('#affil-home').fadeOut(function(){$('#affil-edit').fadeIn();});
+}
+
+function showAffiliations() {
+    $('#affil-edit').fadeOut(function(){$('#affil-home').fadeIn()});
+}
+
+function addSource() {
+    $('#reportSource-home').fadeOut(function(){$('#reportSource-edit').fadeIn();});
+}
+
+function showSources() {
+    $('#reportSource-edit').fadeOut(function(){$('#reportSource-home').fadeIn()});
+}
+
+function addAppeal() {
+    $('#appeal-home').fadeOut(function(){$('#appeal-edit').fadeIn();});
+}
+
+function showAppeals() {
+    $('#appeal-edit').fadeOut(function(){$('#appeal-home').fadeIn()});
+}
+
+function insertString(str,txt,pos){
+    return [txt.slice(0,pos),str,txt.slice(pos)].join('');
+}
+
+function copyDocumentText(e){
+
+    var span = document.createElement('span');
+
+    if(e === 'Affiliation'){
+        addAffiliation();
+        $('#affil-edit :input.textarea').val(highlightedText).change();
+        $(span).addClass('affil-highlight p-1 rounded');
+    }
+    if(e === 'Source'){
+        addSource();
+        $('#reportSource-edit :input.textarea').val(highlightedText).change();
+        $(span).addClass('src-highlight p-1 rounded');
+    }
+    if(e === 'Appeal'){
+        addAppeal();
+        $('#appeal-edit :input.textarea').val(highlightedText).change();
+        $(span).addClass('appeal-highlight p-1 rounded');
+    }
+
+    span.appendChild(range.extractContents());
+    range.insertNode(span);    
+    
+}
+
+$(document).ready(function() { 
+    $(".select2-container").css({'width': '100%' });
+    var i = 0
+    $('#report-html').children().each(function () {
+        i += 1
+    	$(this).attr('id','text-'+i)
+    });
+
+//    $('#report-form').ajaxForm(function() { 
+//        alert("Thank you for your comment!"); 
+//    });    
+    
+    
+});
 </script>
 
 {% endblock %}
@@ -125,8 +228,30 @@ function showReport() {
 {% block extra_css %}
 {{report_form.media.css}}
 <style type="text/css">
+    input {
+        width: 100%;    
+    }
     select {
         width: 100%;    
+    }
+    textarea{
+        font-size: 8pt;    
+    }
+    
+    .text-bg{
+        color: transparent;  
+    }
+    .affil-highlight{
+        background-color: rgba(0,0,0,0.5);
+        color: rgba(255,255,255,1);    
+    }
+    .src-highlight{
+        background-color: rgba(100,0,0,0.5);
+        color: rgba(255,255,255,1);    
+    }
+    .appeal-highlight{
+        background-color: rgba(0,180,0,0.5);
+        color: rgba(255,255,255,1);    
     }
 </style>
 {% endblock %}
