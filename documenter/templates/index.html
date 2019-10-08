@@ -9,19 +9,36 @@ Documenter
 {% if user.is_authenticated %}
 
 
-<div class="row h-100">
-    <div class="col-4 h-100" style="overflow-y: auto;">
-        <div class="list-group h-100">
+<div class="row h-100" style="overflow-y: auto;">
+    <div class="col-3 flex-grow-1 bg-dark text-light" >
+        <h3>Document Queue:</h3>
+        <div class="list-group h-auto">
+        
         {% for doc in user.assigned_user.all %}
-            <a href="#" class="list-group-item list-group-item-action">{{doc}}</a>
+        <a href="{% url 'rate-doc' pk=doc.pk %}" class="list-group-item list-group-item-action bg-dark text-light border-light">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">{{doc.report.title|truncatechars:30}}</h5>
+              <small>3 days ago</small>
+            </div>
+            <p class="mb-1">{{doc.report.author_set.all}} ({{doc.report.media_org}})</p>
+            <small>
+            {% if doc.rated %}
+                Rated on: {{doc.rated_date}}
+            {% else %}
+                Not yet rated.
+            {% endif %}                
+                </small>
+            
+        </a>
         {% empty %}
         
         No Documents to Review.
         
         {% endfor %}
+        
         </div>
     </div>
-    <div class="col-8"></div>
+    <div class="col-9 flex-grow-1"></div>
 </div>
 
 {% else %}

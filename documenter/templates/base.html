@@ -39,17 +39,12 @@
 			    <span class="navbar-toggler-icon"></span>
 			  </button>
 			
-			  {% comment %}
 			  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-			    <ul class="navbar-nav m-auto">
-			      <div class="btn-group">
-			          <a class="btn btn-primary mb-2" href="{% url 'get-next' %}">Get New Document</a>
-			          <a class="btn btn-primary mb-2" href="{% url 'doc-list' %}">List Results</a>
-			          <a class="btn btn-primary mb-2" href="{% url 'export' %}">Download Results</a>
-			      </div>
+			    <ul class="navbar-nav nav-pills m-auto">
+			          <li class="nav-item"><a class="nav-link active" href="{% url 'get-next' %}">Get New Document</a>
+			          <li class="nav-item"><a class="nav-link" href="{% url 'doc-list' %}">List Results</a></li>
+			          <li class="nav-item"><a class="nav-link" href="{% url 'export' %}">Download Results</a></li>
 			    </ul>
-			  </div>
-			  {% endcomment %}
 			 
 			  	 <ul class="navbar-nav ml-auto">
 			  		<li class="nav-item">
@@ -60,19 +55,19 @@
 			            {% endif %}
 			      </li>
 			    </ul>
+			    </div>
 			  
 			</nav>
 
-    <div class="container-fluid h-100 d-flex flex-column">
-        <main role="main" class="flex-shrink h-100 bg-dark">
+        
+        <main role="main" class="container-fluid h-100" style="padding-bottom: 1.7em;">
               {% block js_before_content %}{% endblock %}
               {% block content %}{% endblock %}
         </main>
-        <footer class="d-flex" role="footer" style="height: 1.2em;">
+        <footer class="footer d-flex fixed-bottom bg-dark text-light" role="footer">
         		<h6 class="pr-5">Created By: Brian J. Goode</h6>
-        		<h6>Powered By: Django</h6>
-        </footer>
-    </div>       
+        		<p class="p-0 m-0">Powered By: Django</p>
+        </footer>       
 
     {% block modals %}{% endblock %}
 
