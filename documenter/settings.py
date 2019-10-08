@@ -157,6 +157,7 @@ BOWER_INSTALLED_APPS = [
     'glyphicons',
     'jquery-form',
     'datatables.net-bs4',
+    'select2',
 ]
 BOWER_PATH = os.path.join(BASE_DIR, 'node_modules/bower/bin/bower')
 

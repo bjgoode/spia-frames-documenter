@@ -33,49 +33,55 @@
         <h6>Page</h6> {{doc.report.page}}
     </div>
     <div id="report-edit" style="display:none;">
-        {{report_form | crispy}}
+        
     </div>
 </form>
 
+<form id="affil-form" action="report-affiliation/add/" method="post">{% csrf_token %}
     <div class="d-flex">
         <h4 class="pr-1">Document Affiliations(s)</h4>
         <button type="button" onClick='addAffiliation();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
-        <button type="button" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+        <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
         <button type="button" onClick='showAffiliations();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
     </div>
     <div id="affil-home">
-        {% for a in doc.report.affiliation_set %}
-        
+        <ul>
+        {% for a in doc.reportsourceaffiliation_set.all %}
+            <li>{{a}}</li>
         {% empty %}
             No Document Affiliations Identified.
-        {% endfor %}    
+        {% endfor %}
+        </ul>
     </div>
-    <div id="affil-edit" class="w-100" style="display:none;">
-        {{reportsourceaffiliation_form | crispy}}
-    </div>
+    <div id="affil-edit" class="w-100" style="display:none;"></div>
+</form>
 
+<form id="reportSource-form" action="report-source/add/" method="post">{% csrf_token %}
     <div class="d-flex">
         <h4 class="pr-1">Document Source(s)</h4>
         <button type="button" onClick='addSource();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
-        <button type="button" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+        <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
         <button type="button" onClick='showSources();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
     </div>
     <div id="reportSource-home">
-        {% for reportSource in doc.report.reportSource_set %}
-        
+        <ul>
+        {% for reportSource in doc.reportsource_set.all %}
+            <li>{{reportSource}}</li>
         {% empty %}
             No Document Sources Identified.
-        {% endfor %}    
+        {% endfor %}
+        </ul>    
     </div>
     <div id="reportSource-edit" style="display:none;">
-        {{reportSource_form | crispy}}
+        {{reportSource_form}}
     </div>
-    
-    
+</form>
+
+<form id="appeal-form" action="report-appeal/add/" method="post">{% csrf_token %}
     <div class="d-flex">
         <h4 class="pr-1">Document Appeal(s)</h4>
         <button type="button" onClick='addAppeal();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
-        <button type="button" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+        <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
         <button type="button" onClick='showAppeals();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
     </div>
     <div id="appeal-home">
@@ -88,9 +94,9 @@
     <div id="appeal-edit" style="display:none;">
         {{appeal_form | crispy}}
     </div>
+</form>
    
-    <br>
-    <input type="submit" class="btn btn-outline-primary" value="Submit!" /> 
+
 </div>
 <div style="overflow-y: auto;" class="col-8">
 <h3>Rated By: 
@@ -115,7 +121,6 @@ unrated
 
 {% block extra_js %}
 {{report_form.media.js}}
-
 <script type="text/javascript" >
 
 var highlightedText;
@@ -146,8 +151,14 @@ $('#optionBox').mouseup(function (e) {
 });
 
 function editReport() {
-    $('#report-home').fadeOut(function(){$('#report-edit').fadeIn();});
-    
+    $.ajax({
+        type: "GET",
+        url: "/rate_doc/{{doc.report.id}}/report/update/",
+        success: function(data){
+            $('#report-edit').html(data);
+            $('#report-home').fadeOut(function(){$('#report-edit').fadeIn();});
+        }
+    });
 }
 
 function showReport() {
@@ -155,7 +166,15 @@ function showReport() {
 }
 
 function addAffiliation() {
-    $('#affil-home').fadeOut(function(){$('#affil-edit').fadeIn();});
+    $.ajax({
+        type: "GET",
+        url: "report-affiliation/add/",
+        success: function(data){
+            $('#affil-edit').html(data);
+            
+            $('#affil-home').fadeOut(function(){$('#affil-edit').fadeIn();});
+        }
+    });
 }
 
 function showAffiliations() {
@@ -163,7 +182,14 @@ function showAffiliations() {
 }
 
 function addSource() {
-    $('#reportSource-home').fadeOut(function(){$('#reportSource-edit').fadeIn();});
+    $.ajax({
+        type: "GET",
+        url: "report-source/add/",
+        success: function(data){
+            $('#reportSource-edit').html(data);
+            $('#reportSource-home').fadeOut(function(){$('#reportSource-edit').fadeIn();});
+        }
+    });
 }
 
 function showSources() {
@@ -171,7 +197,14 @@ function showSources() {
 }
 
 function addAppeal() {
-    $('#appeal-home').fadeOut(function(){$('#appeal-edit').fadeIn();});
+    $.ajax({
+        type: "GET",
+        url: "report-appeal/add/",
+        success: function(data){
+            $('#appeal-edit').html(data);
+            $('#appeal-home').fadeOut(function(){$('#appeal-edit').fadeIn();});
+        }
+    });
 }
 
 function showAppeals() {
@@ -203,30 +236,27 @@ function copyDocumentText(e){
     }
 
     span.appendChild(range.extractContents());
-    range.insertNode(span);    
-    
+    range.insertNode(span);     
 }
 
-$(document).ready(function() { 
-    $(".select2-container").css({'width': '100%' });
-    var i = 0
-    $('#report-html').children().each(function () {
-        i += 1
-    	$(this).attr('id','text-'+i)
-    });
-
-//    $('#report-form').ajaxForm(function() { 
-//        alert("Thank you for your comment!"); 
-//    });    
-    
-    
+$(document).ready(function () {
+	$('#affil-form').ajaxForm({
+	   target: $('#affil-edit'),
+	   success: showAffiliations(),
+	});
+	
+    $('#reportSource-form').ajaxForm({
+	   target: $('#reportSource-edit'),
+	   success: showSources(),
+	});
 });
+
 </script>
 
 {% endblock %}
 
 {% block extra_css %}
-{{report_form.media.css}}
+
 <style type="text/css">
     input {
         width: 100%;    

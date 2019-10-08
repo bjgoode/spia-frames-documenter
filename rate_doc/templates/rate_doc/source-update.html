@@ -1,0 +1,36 @@
+{% load crispy_forms_tags %}
+
+
+{{form.media.js}}
+{{form.media.css}}
+
+
+{{form|crispy}}
+
+<script type="text/javascript" >
+$(document).ready(function () {    
+    $('#id_affiliation').select2({
+        tags: false,
+        placeholder: 'Select Affiliation.',
+    });
+    
+    $('#id_source_input').select2({
+        tags: true,
+        placeholder: 'Select or Type New Entry.',
+    });
+    
+    {% for a in view.affiliations %}
+        var newOption = new Option('{{a.name}}', '{{a.id}}', false, false);
+        $('#id_affiliation').append(newOption);
+    {% endfor %}
+    
+    {% for s in view.sources %}
+        var newOption = new Option('{{s}}', '{{s}}', false, false);
+        $('#id_source_input').append(newOption);
+    {% endfor %}
+    
+    
+    $(".select").val('').trigger('change');
+	$(".select2-container").css({'width': '100%' });
+});
+</script>

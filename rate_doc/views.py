@@ -2,21 +2,21 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render, render_to_response
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.views.generic import ListView, DetailView
 
-from django.http import HttpResponseRedirect, HttpResponse
-from django.urls import reverse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.urls import reverse, reverse_lazy
 
 import csv
 
-from .models import Doc
+from .models import Review
 from .forms import *
 
 # Create your views here.
 
-class DocUpdate(UpdateView):
-    model = Doc
+class ReviewUpdate(UpdateView):
+    model = Review
     fields = [
         'report',
         ]
@@ -29,13 +29,81 @@ class DocUpdate(UpdateView):
         form.save()
         return HttpResponseRedirect(reverse('get-next'))
 
+## AJAX Add Classes    
+class AddAffiliation(FormView):
+    model = ReportSourceAffiliation
+    form_class = ReportSourceAffiliationForm
+    template_name = 'rate_doc/affil-update.html'
+    success_url = reverse_lazy('success') 
+    
+    def form_valid(self, form):
+        
+        affiliation = Affiliation.objects.get_or_create(name=form.cleaned_data['affiliation_input'])[0]
+        expertise = Expertise.objects.get_or_create(desc=form.cleaned_data['expertise_input'])[0]
+
+        form.instance.affiliation = affiliation
+        form.instance.expertise = expertise
+        form.instance.review = Review.objects.get(pk=self.kwargs.get('pk',None))
+        form.save()
+        
+        return super().form_valid(form)
+        
+    def affiliations(self):
+        return Affiliation.objects.all()
+        
+    def expertise(self):
+        return Expertise.objects.all()
+        
+    
+class AddSource(CreateView):
+    model = ReportSource
+    form_class = ReportSourceForm
+    template_name = 'rate_doc/source-update.html'
+    success_url = reverse_lazy('success')
+    
+    def form_valid(self, form):
+        source_text = form.cleaned_data['source_input']
+        source_name, source_born_year = source_text.split(' (')
+        source_born_year = source_born_year.split(')')[0]
+        source = Source.objects.get_or_create(name=source_name,year_born=source_born_year)[0]
+
+        form.instance.source = source
+        form.instance.report = Review.objects.get(pk=self.kwargs.get('pk',None)).report
+        form.instance.review = Review.objects.get(pk=self.kwargs.get('pk',None))
+        form.save()
+        
+        return super().form_valid(form)
+        
+    def affiliations(self):
+        return
+        
+    def sources(self):
+        return Source.objects.all()
+    
+class AddAppeal(CreateView):
+    model = Appeal
+    fields = '__all__'
+    template_name = 'rate_doc/generic-update.html'
+
+## AJAX Update Classes
+class UpdateReport(UpdateView):
+    model = Report
+    success_url = '/'
+        
+class UpdateAffiliation(UpdateView):
+    model = ReportSourceAffiliation
+    success_url = '/'
+    
+class DeleteAffiliation(DeleteView):
+    model = ReportSourceAffiliation
+    success_url = '/'
 
 def edit_doc(request, pk):
     if request.method == "POST":
         return HttpResponseRedirect(reverse('get-next'))
         
     else:
-        doc = Doc.objects.get(pk=pk)        
+        doc = Review.objects.get(pk=pk)        
         
         report_form = ReportForm(instance=doc.report)
         reportSource_form = ReportSourceForm()
@@ -51,23 +119,23 @@ def edit_doc(request, pk):
         }      
         
     return render(request, template_name='rate_doc/doc_edit.html', context=outDict)
-    
 
-class DocList(ListView):
-    model = Doc
+
+class ReviewList(ListView):
+    model = Review
     template_name = "rate_doc/doc_list.html"      
 
 
 def get_next(request):
 
-    unrated_docs = Doc.objects.filter(rated=False)
+    unrated_docs = Review.objects.filter(rated=False)
     assigned_docs = unrated_docs.filter(assignedTo=request.user.pk)
     
     if unrated_docs:
         if assigned_docs:
             doc = assigned_docs.first()
         else:
-            doc = Doc.objects.filter(rated=False,assignedTo=None).first()
+            doc = Review.objects.filter(rated=False,assignedTo=None).first()
             doc.assignedTo = request.user
             doc.save()
         
@@ -106,7 +174,7 @@ def Export(request):
 
     writer.writerow(fields)    
     
-    docs = Doc.objects.all().values_list(*fields)
+    docs = Review.objects.all().values_list(*fields)
     for doc in docs:
         writer.writerow(doc)
         

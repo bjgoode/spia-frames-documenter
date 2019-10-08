@@ -30,6 +30,9 @@ class Author(models.Model):
 
 class Expertise(models.Model):
     desc = models.CharField(max_length = 45)
+    
+    def __str__(self):
+        return self.desc
 
 class Frame(models.Model):
     desc = models.CharField(max_length = 45)    
@@ -51,15 +54,23 @@ class Report(models.Model):
 
 class ReportSource(models.Model):
     affiliation = models.ForeignKey('ReportSourceAffiliation', on_delete=models.CASCADE)
-    expertise = models.ForeignKey('Expertise', on_delete=models.CASCADE)
+    expertise = models.ManyToManyField('Expertise')
     source = models.ForeignKey('Source', on_delete=models.CASCADE)
     report = models.ForeignKey('Report', on_delete=models.CASCADE)
     text = models.TextField()
+    review = models.ForeignKey('Review', on_delete=models.CASCADE, null=True)
+    
+    def __str__(self):
+        return '{} ({}) - {}'.format(self.source.name, self.source.year_born, self.affiliation.affiliation.name)
     
 class ReportSourceAffiliation(models.Model):
     affiliation = models.ForeignKey('Affiliation', on_delete=models.CASCADE)
     expertise = models.ForeignKey('Expertise', on_delete=models.CASCADE)
     text = models.TextField()
+    review = models.ForeignKey('Review', on_delete=models.CASCADE, null=True)
+    
+    def __str__(self):
+        return '{} - {}'.format(self.affiliation.name, self.expertise.desc)
 
 class Source(models.Model):
     name = models.CharField(max_length = 255)
@@ -69,7 +80,7 @@ class Source(models.Model):
         return "{} (b.{})".format(self.name, self.year_born)
 
 # Model for rating users.
-class Doc(models.Model):
+class Review(models.Model):
 
     assignedTo = models.ForeignKey(
         User, 
