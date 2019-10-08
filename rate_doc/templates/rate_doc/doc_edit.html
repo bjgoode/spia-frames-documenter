@@ -145,7 +145,6 @@ $('#report-html').mouseup(function (e) {
 	var selectedText = selection.toString();
 	$('#optionBox').hide();
 	if (selectedText.length > 0) {
-//		console.log(selectedText);
         $('#optionBox').css({'top':e.pageY-100,'left':e.pageX, 'position':'absolute', 'border':'1px solid black', 'padding':'5px'});
         $('#optionBox').show();
         highlightedText = selectedText;
@@ -172,13 +171,15 @@ function showReport() {
     $('#report-edit').fadeOut(function (){$('#report-home').fadeIn()});
 }
 
-function addAffiliation() {
+function addAffiliation(val) {
     $.ajax({
         type: "GET",
         url: "report-affiliation/add/",
         success: function(data){
             $('#affil-edit').html(data);
-            
+            if (val){   
+                $('#affil-edit :input.textarea').val(val).change();         
+            }
             $('#affil-home').fadeOut(function(){$('#affil-edit').fadeIn();});
         }
     });
@@ -188,12 +189,15 @@ function showAffiliations() {
     $('#affil-edit').fadeOut(function(){$('#affil-home').fadeIn()});
 }
 
-function addSource() {
+function addSource(val) {
     $.ajax({
         type: "GET",
         url: "report-source/add/",
         success: function(data){
             $('#reportSource-edit').html(data);
+            if (val){
+                $('#reportSource-edit :input.textarea').val(highlightedText).change();
+            }
             $('#reportSource-home').fadeOut(function(){$('#reportSource-edit').fadeIn();});
         }
     });
@@ -203,12 +207,15 @@ function showSources() {
     $('#reportSource-edit').fadeOut(function(){$('#reportSource-home').fadeIn()});
 }
 
-function addAppeal() {
+function addAppeal(val) {
     $.ajax({
         type: "GET",
         url: "report-appeal/add/",
         success: function(data){
             $('#appeal-edit').html(data);
+            if (val) {
+                $('#appeal-edit :input.textarea').val(highlightedText).change();
+            }
             $('#appeal-home').fadeOut(function(){$('#appeal-edit').fadeIn();});
         }
     });
@@ -227,18 +234,15 @@ function copyDocumentText(e){
     var span = document.createElement('span');
 
     if(e === 'Affiliation'){
-        addAffiliation();
-        $('#affil-edit :input.textarea').val(highlightedText).change();
+        addAffiliation(highlightedText);
         $(span).addClass('affil-highlight p-1 rounded');
     }
     if(e === 'Source'){
-        addSource();
-        $('#reportSource-edit :input.textarea').val(highlightedText).change();
+        addSource(highlightedText);
         $(span).addClass('src-highlight p-1 rounded');
     }
     if(e === 'Appeal'){
-        addAppeal();
-        $('#appeal-edit :input.textarea').val(highlightedText).change();
+        addAppeal(highlightedText);
         $(span).addClass('appeal-highlight p-1 rounded');
     }
 

@@ -12,7 +12,7 @@ Documenter
 <div class="row h-100" style="overflow-y: auto;">
     <div class="col-3 flex-grow-1 bg-dark text-light" >
         <h3>Document Queue:</h3>
-        <div class="list-group h-auto">
+        <div class="list-group h-auto my-2">
         
         {% for doc in user.assigned_user.all %}
         <a href="{% url 'rate-doc' pk=doc.pk %}" class="list-group-item list-group-item-action bg-dark text-light border-light">
