@@ -60,7 +60,7 @@
 			</nav>
 
         
-        <main role="main" class="container-fluid h-100" style="padding-bottom: 1.7em;">
+        <main role="main" class="container-fluid bg-secondary" style="padding-bottom: 1.7em;">
               {% block js_before_content %}{% endblock %}
               {% block content %}{% endblock %}
         </main>
@@ -78,6 +78,7 @@
         <script type="text/javascript" src="{% static 'datatables.net/js/jquery.dataTables.js'%}"></script>
         <script type="text/javascript" src="{% static 'datatables.net-bs4/js/dataTables.bootstrap4.js'%}"></script>
         <script type="text/javascript" src="{% static 'select2/dist/js/select2.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'Scrollify/jquery.scrollify.js' %}"></script>
         {% block extra_js %}
             {# Override this in templates to add extra javascript #}
         {% endblock %}

@@ -7,7 +7,7 @@
 
 {% block content %}
 
-<div class="row h-100" style="overflow-y: auto;">
+
 <div class="bg-dark text-light rounded" id="optionBox" style="display: none; z-index: 90000;">
   <h6>Label text as:</h6>
   <button onClick="copyDocumentText('Affiliation')" class="btn btn-primary btn-sm" type="button"><b>Affiliation</b></button>
@@ -15,120 +15,141 @@
   <button onClick="copyDocumentText('Appeal')" class="btn btn-primary btn-sm" type="button"><b>Appeal</b></button>
 </div>
 
-<div style="overflow-y: auto;" class="col-4 h-100 bg-light text-secondary ">
-
-<form id="report-form" method="post">{% csrf_token %}
-    <div class="d-flex">
-        <h4 class="pr-1">Report</h4>
-        <button onClick='editReport();' type="button" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Edit</button>
-        <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
-        <button onClick='showReport();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center" type="button">Cancel</button>
-    </div>
-
-    <div id="report-home">
-        <h6>Title</h6> {{doc.report.title}}
-        <h6>Author</h6> {{doc.report.author}}
-        <h6>Media Organization</h6> {{doc.report.media_org}}
-        <h6>Section</h6> {{doc.report.section}}
-        <h6>Page</h6> {{doc.report.page}}
-    </div>
-    <div id="report-edit" style="display:none;">
-        
-    </div>
-</form>
-
-<form id="affil-form" action="report-affiliation/add/" method="post">{% csrf_token %}
-<div class="mb-3 border-bottom">
-    <div class="d-flex">
-        <h4 class="pr-1">Document Affiliation(s)</h4>
-        <button type="button" onClick='addAffiliation();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
-        <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
-        <button type="button" onClick='showAffiliations();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
-    </div>
-    <div id="affil-home">
-        <ul class="list-group mb-1">
-        {% for a in doc.reportsourceaffiliation_set.all %}
-            <li class="list-group-item list-group-item-light">{{a}}</li>
-        {% empty %}
-            No Document Affiliations Identified.
-        {% endfor %}
-        </ul>
-    </div>
-    <div id="affil-edit" class="w-100" style="display:none;"></div>
-</div>
-</form>
-
-<form id="reportSource-form" action="report-source/add/" method="post">{% csrf_token %}
-<div class="mb-3 border-bottom">
-    <div class="d-flex">
-        <h4 class="pr-1">Document Source(s)</h4>
-        <button type="button" onClick='addSource();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
-        <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
-        <button type="button" onClick='showSources();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
-    </div>
-    <div id="reportSource-home">
-        <ul class="list-group mb-1">
-        {% for reportSource in doc.reportsource_set.all %}
-            <li class="list-group-item list-group-item-light">{{reportSource}}</li>
-        {% empty %}
-            No Document Sources Identified.
-        {% endfor %}
-        </ul>    
-    </div>
-    <div id="reportSource-edit" style="display:none;">
-        {{reportSource_form}}
+<div id="report-box" style="overflow-y: auto; padding-top: 55px; min-height: 100%; z-index: 100;" class="col-8 fixed-top ml-auto d-flex-inline justify-content-center bg-secondary">
+    <div class="container-fluid d-flex-inline flex-column mt-5 p-3 bg-white border" style="position: relative; height: auto; box-shadow: 5px 10px;">
+        <h2>{{doc.report.title | title}}</h2>
+        <div id="report-container" class="bg-white">
+<!--             <div id="affiliations-bg-html" style="position: absolute; top: 0px;" class="text-bg">{{doc.report.report_text_html|linebreaksbr}}</div>
+            <div id="sources-bg-html" style="position: absolute; top: 0px;" class="text-bg">{{doc.report.report_text_html|linebreaksbr}}</div>
+            <div id="appeals-bg-html" style="position: absolute; top: 0px;" class="text-bg">{{doc.report.report_text_html|linebreaksbr}}</div> -->
+            <div id="report-html" class="text-dark">{{doc.report.report_text_html|linebreaksbr}}</div>
+        </div>
     </div>
 </div>
-</form>
 
-<form id="appeal-form" action="report-appeal/add/" method="post">{% csrf_token %}
-<div class="mb-3 border-bottom">
-    <div class="d-flex">
-        <h4 class="pr-1">Document Appeal(s)</h4>
-        <button type="button" onClick='addAppeal();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
-        <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
-        <button type="button" onClick='showAppeals();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
+<section data-section-name="report-detail">
+    <div class="row h-100">
+        <div class="option-container col-4 bg-light text-secondary ">
+            <form id="report-form" method="post">{% csrf_token %}
+                <div class="d-flex" style="padding-top: 55px;">
+                    <h4 class="pr-1 pt-3">Report</h4>
+                    <button onClick='editReport();' type="button" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Edit</button>
+                    <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+                    <button onClick='showReport();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center" type="button">Cancel</button>
+                </div>
+            
+                <div id="report-home">
+                    <h6>Title</h6> {{doc.report.title}}
+                    <h6>Author</h6> {{doc.report.author}}
+                    <h6>Media Organization</h6> {{doc.report.media_org}}
+                    <h6>Section</h6> {{doc.report.section}}
+                    <h6>Page</h6> {{doc.report.page}}
+                </div>
+                <div id="report-edit" style="display:none;">
+                    
+                </div>
+            </form>
+        </div>
     </div>
-    <div id="appeal-home">
-        <ul class="list-group mb-1">
-        {% for appeal in doc.appeal_set.all %}
-            <li class="list-group-item list-group-item-light">{{appeal}}</li>
-        {% empty %}
-            No Document Appeals Identified.
-        {% endfor %}    
+</section>
+<section data-section-name="affiliation-detail">
+    <div class="row h-100">
+        <div class="option-container col-4 bg-light text-secondary ">
+            <form id="affil-form" action="report-affiliation/add/" method="post">{% csrf_token %}
+            <div class="mb-3 border-bottom">
+                <div class="d-flex" style="padding-top: 55px;">
+                    <h4 class="pr-1 pt-3">Document Affiliation(s)</h4>
+                    <button type="button" onClick='addAffiliation();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
+                    <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+                    <button type="button" onClick='showAffiliations();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
+                </div>
+                <div id="affil-home">
+                    <ul class="list-group mb-1">
+                    {% for a in doc.reportsourceaffiliation_set.all %}
+                        <li class="list-group-item list-group-item-light">{{a}}</li>
+                    {% empty %}
+                        No Document Affiliations Identified.
+                    {% endfor %}
+                    </ul>
+                </div>
+                <div id="affil-edit" class="w-100" style="display:none;"></div>
+            </div>
+            </form>
+        </div>
     </div>
-    <div id="appeal-edit" style="display:none;">
-        {{appeal_form | crispy}}
-    </div>
-</div>
-</form>
-   
+</section>
 
-</div>
-<div style="overflow-y: auto;" class="col-8">
-<h3>Rated By: 
-{% if doc.ratedBy %}
-{{doc.ratedBy}}
-{% else %}
-unrated
-{% endif %}
-</h3>
-<h5>Title: {{doc.report.title}}</h5>
-<div id="report-container" style="position: relative;" class="bg-light">
-    <div id="affiliations-bg-html" style="position: absolute; top: 0px;" class="text-bg">{{doc.report.report_text_html|linebreaksbr}}</div>
-    <div id="sources-bg-html" style="position: absolute; top: 0px;" class="text-bg">{{doc.report.report_text_html|linebreaksbr}}</div>
-    <div id="appeals-bg-html" style="position: absolute; top: 0px;" class="text-bg">{{doc.report.report_text_html|linebreaksbr}}</div>
-    <div id="report-html" style="position: absolute; top: 0px;" class="text-dark">{{doc.report.report_text_html|linebreaksbr}}</div>
-</div>
+<section data-section-name="source-detail">
+    <div class="row h-100">
+        <div class="option-container col-4 bg-light text-secondary ">
+            <form id="reportSource-form" action="report-source/add/" method="post">{% csrf_token %}
+            <div class="mb-3 border-bottom">
+                <div class="d-flex" style="padding-top: 55px;">
+                    <h4 class="pr-1 pt-3">Document Source(s)</h4>
+                    <button type="button" onClick='addSource();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
+                    <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+                    <button type="button" onClick='showSources();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
+                </div>
+                <div id="reportSource-home">
+                    <ul class="list-group mb-1">
+                    {% for reportSource in doc.reportsource_set.all %}
+                        <li class="list-group-item list-group-item-light">{{reportSource}}</li>
+                    {% empty %}
+                        No Document Sources Identified.
+                    {% endfor %}
+                    </ul>    
+                </div>
+                <div id="reportSource-edit" style="display:none;">
+                    {{reportSource_form}}
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</section>
 
-</div>
-</div>
+<section data-section-name="appeal-detail">
+    <div class="row h-100">
+        <div class="option-container col-4 bg-light text-secondary ">
+            <form id="appeal-form" action="report-appeal/add/" method="post">{% csrf_token %}
+            <div class="mb-3 border-bottom">
+                <div class="d-flex" style="padding-top: 55px;">
+                    <h4 class="pr-1 pt-3">Document Appeal(s)</h4>
+                    <button type="button" onClick='addAppeal();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
+                    <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+                    <button type="button" onClick='showAppeals();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
+                </div>
+                <div id="appeal-home">
+                    <ul class="list-group mb-1">
+                    {% for appeal in doc.appeal_set.all %}
+                        <li class="list-group-item list-group-item-light">{{appeal}}</li>
+                    {% empty %}
+                        No Document Appeals Identified.
+                    {% endfor %}    
+                </div>
+                <div id="appeal-edit" style="display:none;">
+                    {{appeal_form | crispy}}
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</section>   
+
+
 
 {% endblock %}
 
 {% block extra_js %}
 {{report_form.media.js}}
 <script type="text/javascript" >
+
+$(function() {
+          $.scrollify({
+            section : "section",
+            standardScrollElements: '#report-box',
+          });
+        });
 
 var highlightedText;
 var range;
@@ -287,7 +308,8 @@ $(document).ready(function () {
         resize: none;
         overflow-y:auto;   
     }
-    
+    section{
+    }
     .text-bg{
         color: transparent;  
     }
