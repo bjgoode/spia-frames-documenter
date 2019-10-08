@@ -50,30 +50,29 @@
 			    </ul>
 			  </div>
 			  {% endcomment %}
-			  
-			  <div>
+			 
 			  	 <ul class="navbar-nav ml-auto">
 			  		<li class="nav-item">
 			            {% if user.is_authenticated %}
-			                <a class="text-light" href="{% url 'logout' %}">Sign Out, {{user}}</a>    
+			                <a class="btn btn-outline-danger" href="{% url 'logout' %}">Sign Out</a>    
 			            {% else %}
-			                <a class="text-light" href="{% url 'login' %}">Sign In</a>
+			                <a class="btn btn-outline-light" href="{% url 'login' %}">Sign In</a>
 			            {% endif %}
 			      </li>
 			    </ul>
-			  </div>
+			  
 			</nav>
 
-<div class="container-fluid h-100 d-flex flex-column">
-        <main role="main" class="flex-grow">
+    <div class="container-fluid h-100 d-flex flex-column">
+        <main role="main" class="flex-shrink h-100 bg-dark">
               {% block js_before_content %}{% endblock %}
               {% block content %}{% endblock %}
         </main>
-        <footer class="d-flex" role="footer" style="height: 30px;">
+        <footer class="d-flex" role="footer" style="height: 1.2em;">
         		<h6 class="pr-5">Created By: Brian J. Goode</h6>
         		<h6>Powered By: Django</h6>
         </footer>
-</div>       
+    </div>       
 
     {% block modals %}{% endblock %}
 

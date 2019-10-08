@@ -2,7 +2,8 @@
 {% load staticfiles crispy_forms_tags %}
 
 {% block content %}
-<div class="h-50 align-self-center form-container">
+<div class="d-flex h-100 w-100">
+<div class="align-self-center form-container">
 	<img class="img img-fluid" style="display: inline-block;" src="{% static 'img/sdal-logo.png' %}" alt="">
   <form class="form-group pt-5" method="post">
     {% csrf_token %}
@@ -19,6 +20,7 @@
     <br>
     <button class="btn btn-primary" type="submit">Sign In</button>
   </form>
+</div>
 </div>
 {% endblock content %}
 

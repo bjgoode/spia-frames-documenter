@@ -20,7 +20,17 @@ class Appeal(models.Model):
     text = models.TextField()
     is_explicit = models.BooleanField()
     is_support = models.BooleanField()
-#    action foreign key????
+    report = models.ForeignKey('Report', on_delete=models.CASCADE)
+    review = models.ForeignKey('Review', on_delete=models.CASCADE, null=True)
+    
+    def __str__(self):
+        frames = self.frame.all()
+        fText = ", ".join([f.desc for f in frames])
+        
+        sources = self.source.all()
+        sText = ", ".join([s.name for s in sources])
+        
+        return '{} [{}]'.format(fText,sText)
 
 class Author(models.Model):
     name = models.CharField(max_length = 255)
@@ -35,7 +45,10 @@ class Expertise(models.Model):
         return self.desc
 
 class Frame(models.Model):
-    desc = models.CharField(max_length = 45)    
+    desc = models.CharField(max_length = 45)
+    
+    def __str__(self):
+        return self.desc  
     
 class MediaOrg(models.Model):
     org_name = models.CharField(max_length = 100)
@@ -55,7 +68,8 @@ class Report(models.Model):
 class ReportSource(models.Model):
     affiliation = models.ForeignKey('ReportSourceAffiliation', on_delete=models.CASCADE)
     expertise = models.ManyToManyField('Expertise')
-    source = models.ForeignKey('Source', on_delete=models.CASCADE)
+    source = models.ForeignKey('Source', on_delete=models.CASCADE,
+        help_text="Please use the following format: name (year born)")
     report = models.ForeignKey('Report', on_delete=models.CASCADE)
     text = models.TextField()
     review = models.ForeignKey('Review', on_delete=models.CASCADE, null=True)

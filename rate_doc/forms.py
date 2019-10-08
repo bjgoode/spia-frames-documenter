@@ -1,26 +1,7 @@
 from django import forms
 #from django_select2.forms import Select2TagWidget, Select2TagMixin
-from .models import *
+from .models import *      
 
-#class TagWidget(Select2TagWidget):
-#    
-#    def build_attrs(self, *args, **kwargs):
-#        """Add select2's tag attributes."""
-#        self.attrs.setdefault('data-minimum-input-length', 1)
-#        self.attrs.setdefault('data-tags', 'true')
-#        self.attrs.setdefault('data-token-separators', '[","]')
-#        return super(Select2TagMixin, self).build_attrs(*args, **kwargs)
-#
-#    def optgroups(self, name, value, attrs=None):
-#        values = value[0].split(',') if value[0] else []
-#        selected = set(values)
-#        subgroup = [self.create_option(name, v, v, selected, i) for i, v in enumerate(values)]
-#        return [(None, subgroup, 0)]
-#        
-#    def value_from_datadict(self, data, files, name):
-#        values = super(TagWidget, self).value_from_datadict(data, files, name)
-#        return ",".join(values)
-        
 
 class AffiliationForm(forms.ModelForm):
     class Meta:
@@ -28,12 +9,24 @@ class AffiliationForm(forms.ModelForm):
         fields='__all__'
         
 class AppealForm(forms.ModelForm):
+    frame_input = forms.CharField(
+        label='Frame',
+        required=True,
+        widget = forms.SelectMultiple(choices=[]),    
+    )
+
+    field_order = [
+        'text',
+        'frame_input',
+        'source',
+        'is_explicit',
+        'is_source',
+    ]     
+    
     class Meta:
         model=Appeal
-        fields='__all__'
-#        widgets = {
-#            'frame': TagWidget,        
-#        }
+        exclude=('frame','review','report')
+
 
 class AuthorForm(forms.ModelForm):
     class Meta:
@@ -64,10 +57,6 @@ class ReportForm(forms.ModelForm):
     class Meta:
         model=Report
         exclude = ['report_text_html']
-#        widgets = {
-#            'media_org': TagWidget,
-#            'author': TagWidget,     
-#        }
 
 class ReportSourceForm(forms.ModelForm):
 

@@ -38,25 +38,28 @@
 </form>
 
 <form id="affil-form" action="report-affiliation/add/" method="post">{% csrf_token %}
+<div class="mb-3 border-bottom">
     <div class="d-flex">
-        <h4 class="pr-1">Document Affiliations(s)</h4>
+        <h4 class="pr-1">Document Affiliation(s)</h4>
         <button type="button" onClick='addAffiliation();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
         <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
         <button type="button" onClick='showAffiliations();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
     </div>
     <div id="affil-home">
-        <ul>
+        <ul class="list-group mb-1">
         {% for a in doc.reportsourceaffiliation_set.all %}
-            <li>{{a}}</li>
+            <li class="list-group-item list-group-item-light">{{a}}</li>
         {% empty %}
             No Document Affiliations Identified.
         {% endfor %}
         </ul>
     </div>
     <div id="affil-edit" class="w-100" style="display:none;"></div>
+</div>
 </form>
 
 <form id="reportSource-form" action="report-source/add/" method="post">{% csrf_token %}
+<div class="mb-3 border-bottom">
     <div class="d-flex">
         <h4 class="pr-1">Document Source(s)</h4>
         <button type="button" onClick='addSource();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
@@ -64,9 +67,9 @@
         <button type="button" onClick='showSources();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
     </div>
     <div id="reportSource-home">
-        <ul>
+        <ul class="list-group mb-1">
         {% for reportSource in doc.reportsource_set.all %}
-            <li>{{reportSource}}</li>
+            <li class="list-group-item list-group-item-light">{{reportSource}}</li>
         {% empty %}
             No Document Sources Identified.
         {% endfor %}
@@ -75,9 +78,11 @@
     <div id="reportSource-edit" style="display:none;">
         {{reportSource_form}}
     </div>
+</div>
 </form>
 
 <form id="appeal-form" action="report-appeal/add/" method="post">{% csrf_token %}
+<div class="mb-3 border-bottom">
     <div class="d-flex">
         <h4 class="pr-1">Document Appeal(s)</h4>
         <button type="button" onClick='addAppeal();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
@@ -85,15 +90,17 @@
         <button type="button" onClick='showAppeals();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
     </div>
     <div id="appeal-home">
-        {% for appeal in doc.report.appeal_set %}
-        
+        <ul class="list-group mb-1">
+        {% for appeal in doc.appeal_set.all %}
+            <li class="list-group-item list-group-item-light">{{appeal}}</li>
         {% empty %}
-            No Document Sources Identified.
+            No Document Appeals Identified.
         {% endfor %}    
     </div>
     <div id="appeal-edit" style="display:none;">
         {{appeal_form | crispy}}
     </div>
+</div>
 </form>
    
 
@@ -249,6 +256,11 @@ $(document).ready(function () {
 	   target: $('#reportSource-edit'),
 	   success: showSources(),
 	});
+	
+    $('#appeal-form').ajaxForm({
+	   target: $('#appeal-edit'),
+	   success: showSources(),
+	});
 });
 
 </script>
@@ -265,7 +277,11 @@ $(document).ready(function () {
         width: 100%;    
     }
     textarea{
-        font-size: 8pt;    
+        font-size: 10pt;
+        width: 100%;
+        height: 4em; 
+        resize: none;
+        overflow-y:auto;   
     }
     
     .text-bg{

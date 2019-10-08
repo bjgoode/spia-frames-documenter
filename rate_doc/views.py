@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.urls import reverse, reverse_lazy
 
 import csv
+import ast
 
 from .models import Review
 from .forms import *
@@ -82,8 +83,24 @@ class AddSource(CreateView):
     
 class AddAppeal(CreateView):
     model = Appeal
-    fields = '__all__'
-    template_name = 'rate_doc/generic-update.html'
+    form_class = AppealForm
+    template_name = 'rate_doc/appeal-update.html'
+    success_url = reverse_lazy('success')
+
+    def form_valid(self, form):
+        form.instance.report = Review.objects.get(pk=self.kwargs.get('pk',None)).report
+        form.instance.review = Review.objects.get(pk=self.kwargs.get('pk',None))
+        form.save()
+        
+        frame_desc = ast.literal_eval(form.cleaned_data['frame_input'])
+        frames = [Frame.objects.get_or_create(desc=f)[0] for f in frame_desc]
+        form.instance.frame.set(frames)
+        
+        return super().form_valid(form)    
+    
+    def frames(self):
+        return Frame.objects.all()
+    
 
 ## AJAX Update Classes
 class UpdateReport(UpdateView):

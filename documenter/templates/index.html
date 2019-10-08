@@ -6,14 +6,30 @@ Documenter
 {% endblock %}
 
 {% block content %}
-<div class="col-4">
-    <h4>Que:</h4>
-    {% for doc in docs.objects.all %}
-    {% empty %}
+{% if user.is_authenticated %}
+
+
+<div class="row h-100">
+    <div class="col-4 h-100" style="overflow-y: auto;">
+        <div class="list-group h-100">
+        {% for doc in user.assigned_user.all %}
+            <a href="#" class="list-group-item list-group-item-action">{{doc}}</a>
+        {% empty %}
+        
         No Documents to Review.
-    {% endfor %}
+        
+        {% endfor %}
+        </div>
+    </div>
+    <div class="col-8"></div>
 </div>
-<div class="col-8">
-    <h4>Documenter.</h4>
+
+{% else %}
+<div class="w-100 h-100 d-flex align-items-center justify-content-center">
+    <div class="d-inline-flex flex-column border border-dark p-5" style="border-width: 3pt !important;">
+        <span style="font-size: 80pt; font-family: 'Lucida Console', Monaco, monospace;">Documenter</span>
+        <span class="align-self-end" style="font-size: 20pt; font-family: 'Lucida Console', Monaco, monospace;">get what you need</span>
+    </div>
 </div>
+{% endif %}
 {% endblock %}
