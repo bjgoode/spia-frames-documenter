@@ -18,6 +18,7 @@ class Appeal(models.Model):
     frame = models.ManyToManyField('Frame')
     source = models.ManyToManyField('Source')
     text = models.TextField()
+    span_class = models.CharField(max_length=20)
     is_explicit = models.BooleanField()
     is_support = models.BooleanField()
     report = models.ForeignKey('Report', on_delete=models.CASCADE)
@@ -72,6 +73,7 @@ class ReportSource(models.Model):
         help_text="Please use the following format: name (year born)")
     report = models.ForeignKey('Report', on_delete=models.CASCADE)
     text = models.TextField()
+    span_class = models.CharField(max_length=20)
     review = models.ForeignKey('Review', on_delete=models.CASCADE, null=True)
     
     def __str__(self):
@@ -81,6 +83,7 @@ class ReportSourceAffiliation(models.Model):
     affiliation = models.ForeignKey('Affiliation', on_delete=models.CASCADE)
     expertise = models.ForeignKey('Expertise', on_delete=models.CASCADE)
     text = models.TextField()
+    span_class = models.CharField(max_length=20)
     review = models.ForeignKey('Review', on_delete=models.CASCADE, null=True)
     
     def __str__(self):
@@ -106,4 +109,5 @@ class Review(models.Model):
     rated_date = models.DateTimeField(null=True, blank=True)
     
     report = models.ForeignKey('Report', on_delete=models.CASCADE)
+    review_html = models.TextField()
     

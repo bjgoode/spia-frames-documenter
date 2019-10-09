@@ -9,10 +9,10 @@ Documenter
 {% if user.is_authenticated %}
 
 
-<div class="row h-100" style="overflow-y: auto;">
-    <div class="col-3 flex-grow-1 bg-dark text-light" >
-        <h3>Document Queue:</h3>
-        <div class="list-group h-auto my-2">
+<div class="row">
+    <div class="col-3 pt-5 flex-fill bg-dark text-light" >
+        <h3>Project Queue:</h3>
+        <div class="list-group my-2">
         
         {% for doc in user.assigned_user.all %}
         <a href="{% url 'rate-doc' pk=doc.pk %}" class="list-group-item list-group-item-action bg-dark text-light border-light">
@@ -38,8 +38,17 @@ Documenter
         
         </div>
     </div>
-    <div class="col-9 flex-grow-1"></div>
 </div>
+
+<div id="preview-box" style="overflow-y: auto; padding-top: 45px; z-index: 100;" class="col-9 h-100 fixed-top ml-auto d-flex flex-column justify-content-center">
+    <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+        <div class="d-inline-flex flex-column border border-dark p-5" style="border-width: 3pt !important;">
+            <span style="font-size: 80pt; font-family: 'Lucida Console', Monaco, monospace;">Documenter</span>
+            <span class="align-self-end" style="font-size: 20pt; font-family: 'Lucida Console', Monaco, monospace;">get what you need</span>
+        </div>
+    </div>
+</div>
+
 
 {% else %}
 <div class="w-100 h-100 d-flex align-items-center justify-content-center">
