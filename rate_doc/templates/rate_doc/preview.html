@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Documenter
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-3 pt-5 flex-grow-1 bg-dark text-light" >
+        <h3>Document Queue:</h3>
+        <div class="list-group h-auto my-2">
+        
+        {% for doc in user.assigned_user.all %}
+        <a href="{% url 'rate-doc' pk=doc.pk %}" class="list-group-item list-group-item-action bg-dark text-light border-light">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">{{doc.report.title|truncatechars:30}}</h5>
+              <small>3 days ago</small>
+            </div>
+            <p class="mb-1">{{doc.report.author_set.all}} ({{doc.report.media_org}})</p>
+            <small>
+            {% if doc.rated %}
+                Rated on: {{doc.rated_date}}
+            {% else %}
+                Not yet rated.
+            {% endif %}                
+                </small>
+            
+        </a>
+        {% empty %}
+        
+        No Documents to Review.
+        
+        {% endfor %}
+        
+        </div>
+    </div>
+</div>
+
+<div id="preview-box" style="overflow-y: auto; padding-top: 45px; z-index: 100;" class="col-9 h-100 fixed-top ml-auto d-flex flex-column justify-content-center bg-secondary">
+    <div class="row flex-fill bg-secondary border-bottom"></div>
+    <div class="row flex-fill bg-secondary d-flex">
+        <div class="h-100 col-3 flex-fill border-right"></div>
+        <div class="h-100 col-3 flex-fill border-right"></div>
+        <div class="h-100 col-3 flex-fill border-right"></div>
+        <div class="h-100 col-3 flex-fill"></div>    
+    </div>
+</div>
+
+{% endblock %}
