@@ -35,16 +35,20 @@ class AddAffiliation(FormView):
     model = ReportSourceAffiliation
     form_class = ReportSourceAffiliationForm
     template_name = 'rate_doc/affil-update.html'
-    success_url = reverse_lazy('success') 
+    success_url = reverse_lazy('success')   
     
-    def form_valid(self, form):
+    def form_valid(self, form):                
         
         affiliation = Affiliation.objects.get_or_create(name=form.cleaned_data['affiliation_input'])[0]
         expertise = Expertise.objects.get_or_create(desc=form.cleaned_data['expertise_input'])[0]
 
+        review = Review.objects.get(pk=self.kwargs.get('pk',None))
+        review.review_html = form.cleaned_data['review_html']
+        review.save()
+
         form.instance.affiliation = affiliation
         form.instance.expertise = expertise
-        form.instance.review = Review.objects.get(pk=self.kwargs.get('pk',None))
+        form.instance.review = review
         form.save()
         
         return super().form_valid(form)
@@ -68,9 +72,13 @@ class AddSource(CreateView):
         source_born_year = source_born_year.split(')')[0]
         source = Source.objects.get_or_create(name=source_name,year_born=source_born_year)[0]
 
+        review = Review.objects.get(pk=self.kwargs.get('pk',None))
+        review.review_html = form.cleaned_data['review_html']
+        review.save()
+
         form.instance.source = source
-        form.instance.report = Review.objects.get(pk=self.kwargs.get('pk',None)).report
-        form.instance.review = Review.objects.get(pk=self.kwargs.get('pk',None))
+        form.instance.report = review.report
+        form.instance.review = review
         form.save()
         
         return super().form_valid(form)
@@ -88,8 +96,13 @@ class AddAppeal(CreateView):
     success_url = reverse_lazy('success')
 
     def form_valid(self, form):
-        form.instance.report = Review.objects.get(pk=self.kwargs.get('pk',None)).report
-        form.instance.review = Review.objects.get(pk=self.kwargs.get('pk',None))
+
+        review = Review.objects.get(pk=self.kwargs.get('pk',None))
+        review.review_html = form.cleaned_data['review_html']
+        review.save()        
+        
+        form.instance.report = review.report
+        form.instance.review = review
         form.save()
         
         frame_desc = ast.literal_eval(form.cleaned_data['frame_input'])

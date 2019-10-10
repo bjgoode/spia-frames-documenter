@@ -1,5 +1,4 @@
 from django import forms
-#from django_select2.forms import Select2TagWidget, Select2TagMixin
 from .models import *      
 
 
@@ -14,6 +13,11 @@ class AppealForm(forms.ModelForm):
         required=True,
         widget = forms.SelectMultiple(choices=[]),    
     )
+    
+    review_html = forms.CharField(
+        required=True,
+        widget=forms.HiddenInput(),    
+    )
 
     field_order = [
         'text',
@@ -26,6 +30,9 @@ class AppealForm(forms.ModelForm):
     class Meta:
         model=Appeal
         exclude=('frame','review','report')
+        widgets = {
+            'span_class': forms.HiddenInput(),    
+        }
 
 
 class AuthorForm(forms.ModelForm):
@@ -65,6 +72,11 @@ class ReportSourceForm(forms.ModelForm):
         required=True,
         widget = forms.Select(choices=[]),    
     )    
+    
+    review_html = forms.CharField(
+        required=True,
+        widget=forms.HiddenInput(),    
+    )
 
     field_order = [
         'text',
@@ -75,6 +87,9 @@ class ReportSourceForm(forms.ModelForm):
     class Meta:
         model=ReportSource
         exclude = ['report','review','expertise','source']
+        widgets = {
+            'span_class': forms.HiddenInput(),    
+        }
     
 class ReportSourceAffiliationForm(forms.ModelForm):
 
@@ -88,16 +103,24 @@ class ReportSourceAffiliationForm(forms.ModelForm):
         required=True,
         widget = forms.Select(choices=[]),    
     )
+    
+    review_html = forms.CharField(
+        required=True,
+        widget=forms.HiddenInput(),    
+    )
 
     field_order = [
         'text',
         'affiliation_input',
         'expertise_input',
-    ]    
+    ]   
     
     class Meta:
         model=ReportSourceAffiliation
         exclude=('affiliation','expertise','review')
+        widgets = {
+            'span_class': forms.HiddenInput(),    
+        } 
 
 class SourceForm(forms.ModelForm):
     class Meta:

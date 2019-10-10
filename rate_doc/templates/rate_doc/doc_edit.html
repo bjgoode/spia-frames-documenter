@@ -19,7 +19,7 @@
     <div class="container-fluid d-flex-inline flex-column mt-5 p-3 bg-white border" style="position: relative; height: auto; box-shadow: 5px 10px; margin-bottom: 100px;">
         <h2>{{doc.report.title | title}}</h2>
         <div id="report-container" class="bg-white">
-            <div id="report-html" class="text-dark">{{doc.report.report_text_html|linebreaksbr}}</div>
+            <div id="report-html" class="text-dark">{% with document=doc.review_html|safe %}{{document|linebreaksbr}}{% endwith %}</div>
         </div>
     </div>
 </div>
@@ -212,7 +212,9 @@ function addAffiliation(val) {
             $('#affil-edit').html(data);
             if (val){   
                 $('#affil-edit :input.textarea').val(val).change();
-                $('#affil-edit #id_span_class').val('affil-'+val.hashCode()).change();     
+                $('#affil-edit #id_span_class').val('affil-'+val.hashCode()).change(); 
+                report_html = $('#report-html').html();
+	            $('#affil-edit #id_review_html').val(String(report_html)).change();    
             }
             $.scrollify.move("#affiliation-detail");
             $('#affil-home').fadeOut(function(){$('#affil-edit').fadeIn();});
@@ -234,6 +236,9 @@ function addSource(val) {
             if (val){
                 $('#reportSource-edit :input.textarea').val(val).change();
                 $('#reportSource-edit #id_span_class').val('source-'+val.hashCode()).change();
+                
+	   	        report_html = $('#report-html').html();
+	            $('#reportSource-edit #id_review_html').val(String(report_html)).change();
             }
             $.scrollify.move("#source-detail");
             $('#reportSource-home').fadeOut(function(){$('#reportSource-edit').fadeIn();});
@@ -255,6 +260,8 @@ function addAppeal(val) {
             if (val) {
                 $('#appeal-edit :input.textarea').val(val).change();
                 $('#appeal-edit #id_span_class').val('appeal-'+val.hashCode()).change();
+                report_html = $('#report-html').html();
+	            $('#appeal-edit #id_review_html').val(String(report_html)).change();
             }
             $.scrollify.move("#appeal-detail");
             $('#appeal-home').fadeOut(function(){$('#appeal-edit').fadeIn();});
@@ -273,29 +280,33 @@ function insertString(str,txt,pos){
 function copyDocumentText(e){
 
     var span = document.createElement('span');
-    
-    $('#report-box .highlight').not('.saved').each(function(){
-        console.log($(this).contents());        
-        $(this).contents().unwrap();
-    });
 
     if(e === 'Affiliation'){
         addAffiliation(highlightedText);
-        $(span).addClass('affil-highlight highlight p-1 rounded affil-'+highlightedText.hashCode());    
+        $(span).addClass('affil-highlight highlight p-1 new rounded affil-'+highlightedText.hashCode());    
     }
 
     if(e === 'Source'){
         addSource(highlightedText);
-        $(span).addClass('src-highlight highlight p-1 rounded source-'+highlightedText.hashCode());
+        $(span).addClass('src-highlight highlight p-1 new rounded source-'+highlightedText.hashCode());
     }
     
     if(e === 'Appeal'){
         addAppeal(highlightedText);
-        $(span).addClass('appeal-highlight highlight p-1 rounded appeal-'+highlightedText.hashCode());
+        $(span).addClass('appeal-highlight highlight p-1 new rounded appeal-'+highlightedText.hashCode());
     }
-
-    span.appendChild(range.extractContents());
-    range.insertNode(span);     
+    
+    var rangeText = range.extractContents(); 
+    span.appendChild(rangeText);
+    range.insertNode(span); 
+    
+    $('#report-box .highlight').not('.saved').each(function(){
+        if ($(this).hasClass('new')) {
+        	$(this).removeClass('new');
+        } else {      
+            $(this).contents().unwrap();
+        }
+    });   
 }
 
 $(document).ready(function () {
