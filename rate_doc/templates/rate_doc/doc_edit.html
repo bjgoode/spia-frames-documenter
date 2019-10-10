@@ -302,19 +302,19 @@ function copyDocumentText(e){
     });   
 }
 
+saveSpan = function(d) {
+   report_html = $('#report-html').clone();
+   report_html.find('span').addClass('saved');
+   review_data = d.find(function (e) {
+       return e.name === "review_html"
+   });
+   review_data.value = String(report_html.html());
+   };
+
 $(document).ready(function () {
 	$('#affil-form').ajaxForm({
 	   target: $('#affil-edit'),
-	   beforeSubmit: function (data) {
-	       report_html = $('#report-html').html();
-	       report_html = $(report_html).find('span').each().addClass('saved').html();
-//	       $('#appeal-edit #id_review_html').val(String(report_html)).change();
-	       review_data = data.find(function (e) {
-	           return e.name === "review_html"
-	       });
-	       review_data.value = String(report_html);
-	       console.log(review_data);
-	   },
+	   beforeSubmit: saveSpan,
 	   success: function () {
 	   	   $('.affil-'+highlightedText.hashCode()).addClass('saved');
 	   },
@@ -322,6 +322,7 @@ $(document).ready(function () {
 	
     $('#reportSource-form').ajaxForm({
 	   target: $('#reportSource-edit'),
+	   beforeSubmit: saveSpan,
 	   success: function () {
 	   	   $('.source-'+highlightedText.hashCode()).addClass('saved');
 	   },
@@ -329,6 +330,7 @@ $(document).ready(function () {
 	
     $('#appeal-form').ajaxForm({
 	   target: $('#appeal-edit'),
+	   beforeSubmit: saveSpan,
 	   success: function () {
 	   	   $('.appeal-'+highlightedText.hashCode()).addClass('saved');
 	   },
