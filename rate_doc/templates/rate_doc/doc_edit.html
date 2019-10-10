@@ -212,9 +212,7 @@ function addAffiliation(val) {
             $('#affil-edit').html(data);
             if (val){   
                 $('#affil-edit :input.textarea').val(val).change();
-                $('#affil-edit #id_span_class').val('affil-'+val.hashCode()).change(); 
-                report_html = $('#report-html').html();
-	            $('#affil-edit #id_review_html').val(String(report_html)).change();    
+                $('#affil-edit #id_span_class').val('affil-'+val.hashCode()).change();    
             }
             $.scrollify.move("#affiliation-detail");
             $('#affil-home').fadeOut(function(){$('#affil-edit').fadeIn();});
@@ -236,9 +234,6 @@ function addSource(val) {
             if (val){
                 $('#reportSource-edit :input.textarea').val(val).change();
                 $('#reportSource-edit #id_span_class').val('source-'+val.hashCode()).change();
-                
-	   	        report_html = $('#report-html').html();
-	            $('#reportSource-edit #id_review_html').val(String(report_html)).change();
             }
             $.scrollify.move("#source-detail");
             $('#reportSource-home').fadeOut(function(){$('#reportSource-edit').fadeIn();});
@@ -260,8 +255,6 @@ function addAppeal(val) {
             if (val) {
                 $('#appeal-edit :input.textarea').val(val).change();
                 $('#appeal-edit #id_span_class').val('appeal-'+val.hashCode()).change();
-                report_html = $('#report-html').html();
-	            $('#appeal-edit #id_review_html').val(String(report_html)).change();
             }
             $.scrollify.move("#appeal-detail");
             $('#appeal-home').fadeOut(function(){$('#appeal-edit').fadeIn();});
@@ -312,6 +305,16 @@ function copyDocumentText(e){
 $(document).ready(function () {
 	$('#affil-form').ajaxForm({
 	   target: $('#affil-edit'),
+	   beforeSubmit: function (data) {
+	       report_html = $('#report-html').html();
+	       report_html = $(report_html).find('span').each().addClass('saved').html();
+//	       $('#appeal-edit #id_review_html').val(String(report_html)).change();
+	       review_data = data.find(function (e) {
+	           return e.name === "review_html"
+	       });
+	       review_data.value = String(report_html);
+	       console.log(review_data);
+	   },
 	   success: function () {
 	   	   $('.affil-'+highlightedText.hashCode()).addClass('saved');
 	   },
