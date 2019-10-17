@@ -5,6 +5,7 @@ from django.views.generic import RedirectView, TemplateView
 
 urlpatterns = [
     path(r'<int:pk>/rate', login_required(edit_doc), name='rate-doc'),
+    path(r'<int:pk>/preview', login_required(preview), name='preview-doc'),
     path(r'<int:pk>/report-affiliation/add/', login_required(AddAffiliation.as_view()), name='add-affiliation'),
     path(r'<int:pk>/report-source/add/', login_required(AddSource.as_view()), name='add-source'),
     path(r'<int:pk>/report-appeal/add/', login_required(AddAppeal.as_view()), name='add-appeal'),

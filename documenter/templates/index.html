@@ -17,10 +17,10 @@ Documenter
         {% for doc in user.assigned_user.all %}
         <a href="{% url 'rate-doc' pk=doc.pk %}" class="list-group-item list-group-item-action bg-dark text-light border-light">
             <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">{{doc.report.title|truncatechars:30}}</h5>
+              <h5 class="mb-1 text-truncate">{{doc.report.author_set.all}} ({{doc.report.media_org}})</h5>
               <small>3 days ago</small>
             </div>
-            <p class="mb-1">{{doc.report.author_set.all}} ({{doc.report.media_org}})</p>
+            <p class="mb-1">{{doc.report.title}}</p>
             <small>
             {% if doc.rated %}
                 Rated on: {{doc.rated_date}}

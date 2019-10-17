@@ -150,6 +150,24 @@ def edit_doc(request, pk):
         
     return render(request, template_name='rate_doc/doc_edit.html', context=outDict)
 
+def preview(request, pk):
+
+    doc = Review.objects.get(pk=pk)        
+    
+    report = doc.report
+    reportSources = doc.reportsource_set
+    appeals = doc.appeal_set
+    reportsourceaffiliations = doc.reportsourceaffiliation_set
+    
+    outDict = {
+        'doc': doc,
+        'report': report,
+        'reportsourceaffiliations': reportsourceaffiliations,
+        'report_sources': reportSources,
+        'appeals': appeals,
+    }      
+        
+    return render(request, template_name='rate_doc/preview.html', context=outDict)
 
 class ReviewList(ListView):
     model = Review
