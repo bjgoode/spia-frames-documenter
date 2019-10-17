@@ -212,9 +212,7 @@ function addAffiliation(val) {
             $('#affil-edit').html(data);
             if (val){   
                 $('#affil-edit :input.textarea').val(val).change();
-                $('#affil-edit #id_span_class').val('affil-'+val.hashCode()).change(); 
-                report_html = $('#report-html').html();
-	            $('#affil-edit #id_review_html').val(String(report_html)).change();    
+                $('#affil-edit #id_span_class').val('affil-'+val.hashCode()).change();    
             }
             $.scrollify.move("#affiliation-detail");
             $('#affil-home').fadeOut(function(){$('#affil-edit').fadeIn();});
@@ -236,9 +234,6 @@ function addSource(val) {
             if (val){
                 $('#reportSource-edit :input.textarea').val(val).change();
                 $('#reportSource-edit #id_span_class').val('source-'+val.hashCode()).change();
-                
-	   	        report_html = $('#report-html').html();
-	            $('#reportSource-edit #id_review_html').val(String(report_html)).change();
             }
             $.scrollify.move("#source-detail");
             $('#reportSource-home').fadeOut(function(){$('#reportSource-edit').fadeIn();});
@@ -260,8 +255,6 @@ function addAppeal(val) {
             if (val) {
                 $('#appeal-edit :input.textarea').val(val).change();
                 $('#appeal-edit #id_span_class').val('appeal-'+val.hashCode()).change();
-                report_html = $('#report-html').html();
-	            $('#appeal-edit #id_review_html').val(String(report_html)).change();
             }
             $.scrollify.move("#appeal-detail");
             $('#appeal-home').fadeOut(function(){$('#appeal-edit').fadeIn();});
@@ -309,9 +302,19 @@ function copyDocumentText(e){
     });   
 }
 
+saveSpan = function(d) {
+   report_html = $('#report-html').clone();
+   report_html.find('span').addClass('saved');
+   review_data = d.find(function (e) {
+       return e.name === "review_html"
+   });
+   review_data.value = String(report_html.html());
+   };
+
 $(document).ready(function () {
 	$('#affil-form').ajaxForm({
 	   target: $('#affil-edit'),
+	   beforeSubmit: saveSpan,
 	   success: function () {
 	   	   $('.affil-'+highlightedText.hashCode()).addClass('saved');
 	   },
@@ -319,6 +322,7 @@ $(document).ready(function () {
 	
     $('#reportSource-form').ajaxForm({
 	   target: $('#reportSource-edit'),
+	   beforeSubmit: saveSpan,
 	   success: function () {
 	   	   $('.source-'+highlightedText.hashCode()).addClass('saved');
 	   },
@@ -326,6 +330,7 @@ $(document).ready(function () {
 	
     $('#appeal-form').ajaxForm({
 	   target: $('#appeal-edit'),
+	   beforeSubmit: saveSpan,
 	   success: function () {
 	   	   $('.appeal-'+highlightedText.hashCode()).addClass('saved');
 	   },
