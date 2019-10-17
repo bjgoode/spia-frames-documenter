@@ -61,9 +61,39 @@ class MediaTypeForm(forms.ModelForm):
         fields='__all__'
 
 class ReportForm(forms.ModelForm):
+
+    author_input = forms.CharField(
+        label='Author(s)',
+        required=True,
+        widget = forms.SelectMultiple(choices=[]),    
+    )
+    media_org_input = forms.CharField(
+        label='Media Organization',
+        required=True,
+        widget=forms.Select(choices=[]),    
+    )
+    media_type_input = forms.CharField(
+        label='Media Type',
+        required=False,
+        widget=forms.Select(choices=[])    
+    )
+
+    field_order = [
+        'title',
+        'author_input',
+        'media_org_input',
+        'media_type_input',
+        'section',
+        'page',    
+    ]    
+    
     class Meta:
         model=Report
-        exclude = ['report_text_html']
+        exclude = [
+            'author',
+            'media_org',
+            'report_text_html',  
+        ]
 
 class ReportSourceForm(forms.ModelForm):
 

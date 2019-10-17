@@ -55,6 +55,9 @@ class MediaOrg(models.Model):
     org_name = models.CharField(max_length = 100)
     media_type = models.ForeignKey('MediaType', on_delete=models.CASCADE)
     
+    def __str__(self):
+        return self.org_name
+    
 class MediaType(models.Model):
     type_desc = models.CharField(max_length = 45)    
 

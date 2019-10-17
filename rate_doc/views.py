@@ -31,7 +31,7 @@ class ReviewUpdate(UpdateView):
         return HttpResponseRedirect(reverse('get-next'))
 
 ## AJAX Add Classes    
-class AddAffiliation(FormView):
+class AddAffiliation(CreateView):
     model = ReportSourceAffiliation
     form_class = ReportSourceAffiliationForm
     template_name = 'rate_doc/affil-update.html'
@@ -118,7 +118,39 @@ class AddAppeal(CreateView):
 ## AJAX Update Classes
 class UpdateReport(UpdateView):
     model = Report
-    success_url = '/'
+    form_class = ReportForm
+    success_url = reverse_lazy('success')
+    template_name = 'rate_doc/report-update.html'
+    
+    def authors(self):
+        return Author.objects.all()
+        
+    def media_org(self):
+        return MediaOrg.objects.all()
+        
+    def media_type(self):
+        return MediaType.objects.all()
+        
+    def form_valid(self, form):
+        author_text = ast.literal_eval(form.cleaned_data['author_input'])
+        authors = [Author.objects.get_or_create(name=a_t)[0] for a_t in author_text]
+
+        media_org_text = form.cleaned_data['media_org_input']     
+        if (MediaOrg.objects.filter(org_name=media_org_text).exists()):
+            media_org = MediaOrg.objects.get(org_name=media_org_text)
+            
+        else:
+            media_type_desc = form.cleaned_data['media_type_input']
+            media_type, created = MediaType.objects.get_or_create(type_desc=media_type_desc)
+            
+            media_org = MediaOrg.objects.create(org_name=media_org_text, media_type=media_type)
+        
+        form.instance.author.set(authors)
+        form.instance.media_org = media_org
+        form.save()
+        
+        return super().form_valid(form)
+        
         
 class UpdateAffiliation(UpdateView):
     model = ReportSourceAffiliation
