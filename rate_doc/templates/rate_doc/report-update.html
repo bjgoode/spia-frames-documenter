@@ -44,6 +44,17 @@ $(document).ready(function () {
     
     $(".select").val('').trigger('change');
 	$(".select2-container").css({'width': '100%' });
+	
+	{% for k, vs in view.initial_values.items %}
+	console.log('{{k}}');
+	console.log('{{vs}}');
+	   $('#id_{{k}}_input').val([ 
+        {% for v in vs %}	   
+	       '{{v}}',                  
+	    {% endfor %}            
+	   ]).trigger('change');
+	{% endfor %}
+	
 });
 
 </script>

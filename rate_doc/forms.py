@@ -70,7 +70,7 @@ class ReportForm(forms.ModelForm):
     media_org_input = forms.CharField(
         label='Media Organization',
         required=True,
-        widget=forms.Select(choices=[]),    
+        widget=forms.Select(choices=[]),  
     )
     media_type_input = forms.CharField(
         label='Media Type',

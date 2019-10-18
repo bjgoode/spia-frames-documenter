@@ -131,6 +131,17 @@ class UpdateReport(UpdateView):
     def media_type(self):
         return MediaType.objects.all()
         
+    def initial_values(self):
+
+        pk = self.kwargs.get('pk')        
+        dictionary = {
+            'author': Review.objects.get(pk=pk).report.author.values_list('name', flat=True),
+            'media_org': [Review.objects.get(pk=pk).report.media_org],
+            'media_type': [Review.objects.get(pk=pk).report.media_org.media_type],
+        }       
+        
+        return dictionary
+    
     def form_valid(self, form):
         author_text = ast.literal_eval(form.cleaned_data['author_input'])
         authors = [Author.objects.get_or_create(name=a_t)[0] for a_t in author_text]

@@ -42,10 +42,11 @@
                 <div id="report-home">
                     <h6>Title</h6> 
                     <p class="font-weight-bold">{{doc.report.title}}</p>
-                    <h6>Author</h6> 
-                    <p class="font-weight-bold">{{doc.report.author}}</p>
+                    <h6>Author (s)</h6> 
+                    <p class="font-weight-bold">                       
+                        {{doc.report.author.all|join:", "}}</p>
                     <h6>Media Organization</h6> 
-                    <p class="font-weight-bold">{{doc.report.media_org}}</p>
+                    <p class="font-weight-bold">{{doc.report.media_org}} [{{doc.report.media_org.media_type}}]</p>
                     <h6>Section</h6> 
                     <p class="font-weight-bold">{{doc.report.section}}</p>
                     <h6>Page</h6> 

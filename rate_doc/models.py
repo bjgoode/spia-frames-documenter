@@ -5,16 +5,18 @@ from django.db import models
 from django.contrib.auth.models import User
 from django import forms
 
+from django_extensions.db.models import TimeStampedModel
+
 
 
 # Create your models here.
 
 # Models for Rating Frames/Sources/Affiliations
-class Affiliation(models.Model):
+class Affiliation(TimeStampedModel):
     name = models.CharField(max_length = 100)
     
     
-class Appeal(models.Model):
+class Appeal(TimeStampedModel):
     frame = models.ManyToManyField('Frame')
     source = models.ManyToManyField('Source')
     text = models.TextField()
@@ -33,35 +35,38 @@ class Appeal(models.Model):
         
         return '{} [{}]'.format(fText,sText)
 
-class Author(models.Model):
+class Author(TimeStampedModel):
     name = models.CharField(max_length = 255)
     
     def __str__(self):
         return self.name
 
-class Expertise(models.Model):
+class Expertise(TimeStampedModel):
     desc = models.CharField(max_length = 45)
     
     def __str__(self):
         return self.desc
 
-class Frame(models.Model):
+class Frame(TimeStampedModel):
     desc = models.CharField(max_length = 45)
     
     def __str__(self):
         return self.desc  
     
-class MediaOrg(models.Model):
+class MediaOrg(TimeStampedModel):
     org_name = models.CharField(max_length = 100)
     media_type = models.ForeignKey('MediaType', on_delete=models.CASCADE)
     
     def __str__(self):
         return self.org_name
     
-class MediaType(models.Model):
+class MediaType(TimeStampedModel):
     type_desc = models.CharField(max_length = 45)    
+    
+    def __str__(self):
+        return self.type_desc
 
-class Report(models.Model):
+class Report(TimeStampedModel):
     title = models.CharField(max_length = 255)
     section = models.CharField(max_length = 45, null=True, blank=True)
     page = models.PositiveIntegerField(null=True)
@@ -69,7 +74,7 @@ class Report(models.Model):
     author = models.ManyToManyField('Author')
     report_text_html = models.TextField()
 
-class ReportSource(models.Model):
+class ReportSource(TimeStampedModel):
     affiliation = models.ForeignKey('ReportSourceAffiliation', on_delete=models.CASCADE)
     expertise = models.ManyToManyField('Expertise')
     source = models.ForeignKey('Source', on_delete=models.CASCADE,
@@ -82,7 +87,7 @@ class ReportSource(models.Model):
     def __str__(self):
         return '{} ({}) - {}'.format(self.source.name, self.source.year_born, self.affiliation.affiliation.name)
     
-class ReportSourceAffiliation(models.Model):
+class ReportSourceAffiliation(TimeStampedModel):
     affiliation = models.ForeignKey('Affiliation', on_delete=models.CASCADE)
     expertise = models.ForeignKey('Expertise', on_delete=models.CASCADE)
     text = models.TextField()
@@ -92,7 +97,7 @@ class ReportSourceAffiliation(models.Model):
     def __str__(self):
         return '{} - {}'.format(self.affiliation.name, self.expertise.desc)
 
-class Source(models.Model):
+class Source(TimeStampedModel):
     name = models.CharField(max_length = 255)
     year_born = models.IntegerField() #add validation
     
@@ -100,7 +105,7 @@ class Source(models.Model):
         return "{} (b.{})".format(self.name, self.year_born)
 
 # Model for rating users.
-class Review(models.Model):
+class Review(TimeStampedModel):
 
     assignedTo = models.ForeignKey(
         User, 
