@@ -32,5 +32,13 @@ $(document).ready(function () {
     
     $(".select").val('').trigger('change');
 	$(".select2-container").css({'width': '100%' });
+	
+    {% for k, vs in view.initial_values.items %}
+	   $('#id_{{k}}').val([ 
+            {% for v in vs %}	   
+	       '{{v}}',                  
+	        {% endfor %}            
+	   ]).trigger('change');
+	{% endfor %}
 });
 </script>

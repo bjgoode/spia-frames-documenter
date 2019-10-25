@@ -28,11 +28,22 @@ $(document).ready(function () {
     
     {% for s in view.sources %}
         var newOption = new Option('{{s}}', '{{s}}', false, false);
-        $('#id_source_input').append(newOption);
+        $('#id_source').append(newOption);
     {% endfor %}
     
     
     $(".select").val('').trigger('change');
 	$(".select2-container").css({'width': '100%' });
+	
+	{% for k, vs in view.initial_values.items %}
+	console.log('{{vs}}');
+	console.log('{{k}}');
+	   $('#id_{{k}}').val([ 
+            {% for v in vs %}	   
+	       '{{v}}',                  
+	        {% endfor %}            
+	   ]).trigger('change');
+	{% endfor %}
+	console.log($('#id_source_input'));
 });
 </script>

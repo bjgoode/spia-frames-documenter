@@ -66,18 +66,12 @@
             <div class="mb-3 border-bottom">
                 <div class="d-flex" style="padding-top: 55px;">
                     <h4 class="pr-1 pt-3">Document Affiliation(s)</h4>
-                    <button type="button" onClick='addAffiliation();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
+                    <button type="button" onClick='addAffiliation(val=false,update=update);' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
                     <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
                     <button type="button" onClick='showAffiliations();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
                 </div>
                 <div id="affil-home">
-                    <ul class="list-group mb-1">
-                    {% for a in doc.reportsourceaffiliation_set.all %}
-                        <li class="list-group-item list-group-item-light d-flex">{{a}}<span class="ml-auto px-1 glyphicon glyphicon-pencil"></span><span class="px-1 glyphicon glyphicon-trash"></span></li>
-                    {% empty %}
-                        No Document Affiliations Identified.
-                    {% endfor %}
-                    </ul>
+                    {% include 'rate_doc/affil-list.html' %}
                 </div>
                 <div id="affil-edit" class="w-100" style="display:none;"></div>
             </div>
@@ -98,16 +92,10 @@
                     <button type="button" onClick='showSources();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
                 </div>
                 <div id="reportSource-home">
-                    <ul class="list-group mb-1">
-                    {% for reportSource in doc.reportsource_set.all %}
-                        <li class="list-group-item list-group-item-light d-flex">{{reportSource}}<span class="ml-auto px-1 glyphicon glyphicon-pencil"></span><span class="px-1 glyphicon glyphicon-trash"></span></li>
-                    {% empty %}
-                        No Document Sources Identified.
-                    {% endfor %}
-                    </ul>    
+                    {% include 'rate_doc/source-list.html' %}    
                 </div>
                 <div id="reportSource-edit" style="display:none;">
-                    {{reportSource_form}}
+
                 </div>
             </div>
             </form>
@@ -127,16 +115,9 @@
                     <button type="button" onClick='showAppeals();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
                 </div>
                 <div id="appeal-home">
-                    <ul class="list-group mb-1">
-                    {% for appeal in doc.appeal_set.all %}
-                        <li class="list-group-item list-group-item-light d-flex">{{appeal}}<span class="ml-auto px-1 glyphicon glyphicon-pencil"></span><span class="px-1 glyphicon glyphicon-trash"></span></li>
-                    {% empty %}
-                        No Document Appeals Identified.
-                    {% endfor %}    
+                    {% include 'rate_doc/appeal-list.html' %}                
                 </div>
-                <div id="appeal-edit" style="display:none;">
-                    {{appeal_form | crispy}}
-                </div>
+                <div id="appeal-edit" style="display:none;"></div>
             </div>
             </form>
         </div>
@@ -235,20 +216,86 @@ function showReport() {
     $('#report-edit').fadeOut(function (){$('#report-home').fadeIn()});
 }
 
-function addAffiliation(val) {
-    
+var update = false;
+
+function addAffiliation(val, update) {  
+    console.log(update);
+    if  (update){
+        if (val){   
+            $('#affil-edit :input.textarea').val(val).change();
+            $('#affil-edit #id_span_class').val('affil-'+val.hashCode()).change();    
+        }
+    } else {
+        $.ajax({
+            type: "GET",
+            url: "report-affiliation/add/",
+            success: function(data){
+                $('#affil-edit').html(data);
+                if (val){   
+                    $('#affil-edit :input.textarea').val(val).change();
+                    $('#affil-edit #id_span_class').val('affil-'+val.hashCode()).change();    
+                }
+                $.scrollify.move("#affiliation-detail");
+                $('#affil-home').fadeOut(function(){$('#affil-edit').fadeIn();});
+                $('#affil-form').attr('action',"report-affiliation/add/");
+            }
+        });
+    }
+}
+
+function updateAffiliation(pk) {   
     $.ajax({
         type: "GET",
-        url: "report-affiliation/add/",
+        url: "report-affiliation/" + pk + "/update/",
         success: function(data){
             $('#affil-edit').html(data);
-            if (val){   
-                $('#affil-edit :input.textarea').val(val).change();
-                $('#affil-edit #id_span_class').val('affil-'+val.hashCode()).change();    
-            }
             $.scrollify.move("#affiliation-detail");
             $('#affil-home').fadeOut(function(){$('#affil-edit').fadeIn();});
-        }
+            //console.log(data);
+                        
+            var val = $("#affil-edit").find('#id_span_class').val();            
+            $('.'+val).removeClass('saved');
+            $('#affil-form').attr('action',"report-affiliation/" + pk + "/update/");
+            
+            update = true;
+            highlightedText = $('.'+val).text(); 
+        },
+    });
+}
+
+function deleteAffiliation(pk,sc) {   
+    $.ajax({
+        type: "GET",
+        url: "report-affiliation/" + pk + "/delete/",
+        success: function (data) {
+        	$('#affil-home').html(data);
+        	console.log($('.'+sc));
+        	$('.'+sc).contents().unwrap();
+        },
+    });
+}
+
+function deleteSource(pk,sc) {   
+    $.ajax({
+        type: "GET",
+        url: "report-source/" + pk + "/delete/",
+        success: function (data) {
+        	$('#reportSource-home').html(data);
+        	console.log($('.'+sc));
+        	$('.'+sc).contents().unwrap();
+        },
+    });
+}
+
+function deleteAppeal(pk,sc) {   
+    $.ajax({
+        type: "GET",
+        url: "report-appeal/" + pk + "/delete/",
+        success: function (data) {
+        	$('#appeal-home').html(data);
+        	console.log($('.'+sc));
+        	$('.'+sc).contents().unwrap();
+        },
     });
 }
 
@@ -256,20 +303,45 @@ function showAffiliations() {
     $('#affil-edit').fadeOut(function(){$('#affil-home').fadeIn()});
 }
 
-function addSource(val) {
+function addSource(val, update) {
+    if  (update){
+        if (val){   
+            $('#reportSource-edit :input.textarea').val(val).change();
+            $('#reportSource-edit #id_span_class').val('source-'+val.hashCode()).change();    
+        }
+    } else {
+        $.ajax({
+            type: "GET",
+            url: "report-source/add/",
+            success: function(data){
+                $('#reportSource-edit').html(data);
+                if (val){
+                    $('#reportSource-edit :input.textarea').val(val).change();
+                    $('#reportSource-edit #id_span_class').val('source-'+val.hashCode()).change();
+                }
+                $.scrollify.move("#source-detail");
+                $('#reportSource-home').fadeOut(function(){$('#reportSource-edit').fadeIn();});
+            }
+        });
+    }
+}
 
+function updateSource(pk) {   
     $.ajax({
         type: "GET",
-        url: "report-source/add/",
+        url: "report-source/" + pk + "/update/",
         success: function(data){
             $('#reportSource-edit').html(data);
-            if (val){
-                $('#reportSource-edit :input.textarea').val(val).change();
-                $('#reportSource-edit #id_span_class').val('source-'+val.hashCode()).change();
-            }
             $.scrollify.move("#source-detail");
             $('#reportSource-home').fadeOut(function(){$('#reportSource-edit').fadeIn();});
-        }
+
+            update = true;
+                        
+            var val = $("#reportSource-edit").find('#id_span_class').val();            
+            $('.'+val).removeClass('saved');
+            $('#reportSource-form').attr('action',"report-source/" + pk + "/update/");
+            highlightedText = $('.'+val).text();
+        },
     });
 }
 
@@ -277,20 +349,46 @@ function showSources() {
     $('#reportSource-edit').fadeOut(function(){$('#reportSource-home').fadeIn()});
 }
 
-function addAppeal(val) {
+function addAppeal(val, update) {
+    if  (update){
+        if (val){   
+            $('#appeal-edit :input.textarea').val(val).change();
+            $('#appeal-edit #id_span_class').val('appeal-'+val.hashCode()).change();    
+        }
+    } else {
+        $.ajax({
+            type: "GET",
+            url: "report-appeal/add/",
+            success: function(data){
+                $('#appeal-edit').html(data);
+                if (val) {
+                    $('#appeal-edit :input.textarea').val(val).change();
+                    $('#appeal-edit #id_span_class').val('appeal-'+val.hashCode()).change();
+                }
+                $.scrollify.move("#appeal-detail");
+                $('#appeal-home').fadeOut(function(){$('#appeal-edit').fadeIn();});
+            }
+        });
+    }
+}
 
+function updateAppeal(pk) {   
     $.ajax({
         type: "GET",
-        url: "report-appeal/add/",
+        url: "report-appeal/" + pk + "/update/",
         success: function(data){
+            console.log('Appeal: ' + pk);
             $('#appeal-edit').html(data);
-            if (val) {
-                $('#appeal-edit :input.textarea').val(val).change();
-                $('#appeal-edit #id_span_class').val('appeal-'+val.hashCode()).change();
-            }
             $.scrollify.move("#appeal-detail");
             $('#appeal-home').fadeOut(function(){$('#appeal-edit').fadeIn();});
-        }
+            
+            update = true;
+                        
+            var val = $("#appeal-edit").find('#id_span_class').val();            
+            $('.'+val).removeClass('saved');
+            $('#appeal-form').attr('action',"report-appeal/" + pk + "/update/");
+            highlightedText = $('.'+val).text();
+        },
     });
 }
 
@@ -307,17 +405,17 @@ function copyDocumentText(e){
     var span = document.createElement('span');
 
     if(e === 'Affiliation'){
-        addAffiliation(highlightedText);
+        addAffiliation(highlightedText, update);
         $(span).addClass('affil-highlight highlight p-1 new rounded affil-'+highlightedText.hashCode());    
     }
 
     if(e === 'Source'){
-        addSource(highlightedText);
+        addSource(highlightedText, update);
         $(span).addClass('src-highlight highlight p-1 new rounded source-'+highlightedText.hashCode());
     }
     
     if(e === 'Appeal'){
-        addAppeal(highlightedText);
+        addAppeal(highlightedText, update);
         $(span).addClass('appeal-highlight highlight p-1 new rounded appeal-'+highlightedText.hashCode());
     }
     
@@ -349,26 +447,33 @@ $(document).ready(function () {
 	});
 
 	$('#affil-form').ajaxForm({
-	   target: $('#affil-edit'),
+	   target: $('#affil-home'),
 	   beforeSubmit: saveSpan,
 	   success: function () {
 	   	   $('.affil-'+highlightedText.hashCode()).addClass('saved');
+	   	   $('#affil-edit').fadeOut(function(){$('#affil-home').fadeIn();});
+	   	   update = false;
 	   },
 	});
 	
     $('#reportSource-form').ajaxForm({
-	   target: $('#reportSource-edit'),
+	   target: $('#reportSource-home'),
 	   beforeSubmit: saveSpan,
 	   success: function () {
 	   	   $('.source-'+highlightedText.hashCode()).addClass('saved');
+	   	   $('#reportSource-edit').fadeOut(function(){$('#reportSource-home').fadeIn();});
+	   	   update = false;
 	   },
 	});
 	
     $('#appeal-form').ajaxForm({
-	   target: $('#appeal-edit'),
+	   target: $('#appeal-home'),
 	   beforeSubmit: saveSpan,
 	   success: function () {
+	       console.log(highlightedText);
 	   	   $('.appeal-'+highlightedText.hashCode()).addClass('saved');
+	   	   $('#appeal-edit').fadeOut(function(){$('#appeal-home').fadeIn();});
+	   	   update = false;
 	   },
 	});
 });

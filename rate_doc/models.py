@@ -15,6 +15,9 @@ from django_extensions.db.models import TimeStampedModel
 class Affiliation(TimeStampedModel):
     name = models.CharField(max_length = 100)
     
+    def __str__(self):
+        return self.name
+    
     
 class Appeal(TimeStampedModel):
     frame = models.ManyToManyField('Frame')
