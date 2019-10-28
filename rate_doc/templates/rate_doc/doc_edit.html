@@ -34,23 +34,13 @@
             <form id="report-form" action="report/update/" method="post">{% csrf_token %}
                 <div class="d-flex" style="padding-top: 55px;">
                     <h4 class="pr-1 pt-3">Report Details</h4>
-                    <button onClick='editReport();' type="button" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Edit</button>
-                    <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
-                    <button onClick='showReport();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center" type="button">Cancel</button>
+                    <button onClick='editReport();' type="button" class="report btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Edit</button>
+                    <button type="submit" style="display:none;" class="report btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+                    <button onClick='showReport();' style="display:none;" class="report btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center" type="button">Cancel</button>
                 </div>
             
                 <div id="report-home">
-                    <h6>Title</h6> 
-                    <p class="font-weight-bold">{{doc.report.title}}</p>
-                    <h6>Author (s)</h6> 
-                    <p class="font-weight-bold">                       
-                        {{doc.report.author.all|join:", "}}</p>
-                    <h6>Media Organization</h6> 
-                    <p class="font-weight-bold">{{doc.report.media_org}} [{{doc.report.media_org.media_type}}]</p>
-                    <h6>Section</h6> 
-                    <p class="font-weight-bold">{{doc.report.section}}</p>
-                    <h6>Page</h6> 
-                    <p class="font-weight-bold">{{doc.report.page}}</p>
+                    {% include 'rate_doc/report-detail.html' %}
                 </div>
                 <div id="report-edit" style="display:none;">
                     
@@ -66,14 +56,14 @@
             <div class="mb-3 border-bottom">
                 <div class="d-flex" style="padding-top: 55px;">
                     <h4 class="pr-1 pt-3">Document Affiliation(s)</h4>
-                    <button type="button" onClick='addAffiliation(val=false,update=update);' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
-                    <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
-                    <button type="button" onClick='showAffiliations();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
+                    <button type="button" onClick='addAffiliation(val=false,update=update);' class="affil home btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
+                    <button type="submit" style="display:none;" class="affil edit btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+                    <button type="button" style="display:none;" onClick='showAffiliations();' class="affil edit btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
                 </div>
-                <div id="affil-home">
+                <div id="affil-home" class="affil home">
                     {% include 'rate_doc/affil-list.html' %}
                 </div>
-                <div id="affil-edit" class="w-100" style="display:none;"></div>
+                <div id="affil-edit" class="w-100 affil edit" style="display:none;"></div>
             </div>
             </form>
         </div>
@@ -87,14 +77,14 @@
             <div class="mb-3 border-bottom">
                 <div class="d-flex" style="padding-top: 55px;">
                     <h4 class="pr-1 pt-3">Document Source(s)</h4>
-                    <button type="button" onClick='addSource();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
-                    <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
-                    <button type="button" onClick='showSources();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
+                    <button type="button" onClick='addSource();' class="source home btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
+                    <button type="submit" style="display:none;" class="source edit btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+                    <button type="button" style="display:none;" onClick='showSources();' class="source edit btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
                 </div>
-                <div id="reportSource-home">
+                <div id="reportSource-home" class="source home">
                     {% include 'rate_doc/source-list.html' %}    
                 </div>
-                <div id="reportSource-edit" style="display:none;">
+                <div id="reportSource-edit" class="source edit" style="display:none;">
 
                 </div>
             </div>
@@ -110,14 +100,14 @@
             <div class="mb-3 border-bottom">
                 <div class="d-flex" style="padding-top: 55px;">
                     <h4 class="pr-1 pt-3">Document Appeal(s)</h4>
-                    <button type="button" onClick='addAppeal();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
-                    <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
-                    <button type="button" onClick='showAppeals();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
+                    <button type="button" onClick='addAppeal();' class="appeal home btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
+                    <button type="submit" style="display:none;" class="appeal edit btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+                    <button type="button" style="display:none;" onClick='showAppeals();' class="appeal edit btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
                 </div>
-                <div id="appeal-home">
+                <div id="appeal-home" class="appeal home">
                     {% include 'rate_doc/appeal-list.html' %}                
                 </div>
-                <div id="appeal-edit" style="display:none;"></div>
+                <div id="appeal-edit" class="appeal edit" style="display:none;"></div>
             </div>
             </form>
         </div>
@@ -130,11 +120,11 @@
             <div class="mb-3 border-bottom">
                 <div class="d-flex" style="padding-top: 55px;">
                     <h4 class="pr-1 pt-3">Document Action(s)</h4>
-                    <button type="button" onClick='addAction();' class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
-                    <button type="submit" class="btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
-                    <button type="button" onClick='showAction();' class="btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
+                    <button type="button" onClick='addAction();' class="action home btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
+                    <button type="submit" style="display:none;" class="action edit btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
+                    <button type="button" style="display:none;" onClick='showAction();' class="action edit btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
                 </div>
-                <div id="affil-home">
+                <div id="action-home" class="action home">
                     <ul class="list-group mb-1">
                     {% for a in doc.reportaction_set.all %}
                         <li class="list-group-item list-group-item-light d-flex">{{a}}<span class="ml-auto px-1 glyphicon glyphicon-pencil"></span><span class="px-1 glyphicon glyphicon-trash"></span></li>
@@ -143,7 +133,7 @@
                     {% endfor %}
                     </ul>
                 </div>
-                <div id="action-edit" class="w-100" style="display:none;"></div>
+                <div id="action-edit" class="w-100 action edit" style="display:none;"></div>
             </div>
             </form>
         </div>
@@ -168,6 +158,16 @@ String.prototype.hashCode = function() {
   }
   return hash;
 };
+
+function updateReviewHTML(){
+    $.ajax({
+        type: "GET",
+        url: "/rate_doc/{{doc.report.id}}/report/html/",
+        success: function(data){
+            $('#report-html').html(data);
+        }
+    });
+}
 
 $(function() {
           $.scrollify({
@@ -210,16 +210,26 @@ function editReport() {
             $('#report-home').fadeOut(function(){$('#report-edit').fadeIn();});
         }
     });
+    $('.report').toggle();
 }
 
 function showReport() {
     $('#report-edit').fadeOut(function (){$('#report-home').fadeIn()});
+    $('.report').toggle();
+    update = false;
 }
 
 var update = false;
 
-function addAffiliation(val, update) {  
-    console.log(update);
+function addAffiliation(val, update) {
+    $('.updating').removeClass('updating').addClass('saved');
+    $('.edit:not(.affil)').hide(function () {
+    	$('.home:not(.affil)').show();
+    });
+    $('.affil.home').fadeOut(function () {
+        $('.affil.edit').fadeIn();	
+    });
+    
     if  (update){
         if (val){   
             $('#affil-edit :input.textarea').val(val).change();
@@ -243,7 +253,17 @@ function addAffiliation(val, update) {
     }
 }
 
-function updateAffiliation(pk) {   
+function updateAffiliation(pk) {
+    $('.updating').removeClass('updating').addClass('saved');
+    $('.edit:not(.affil)').hide(function () {
+    	$('.home:not(.affil)').show();
+    });
+    $('.affil.home').fadeOut(function () {
+        $('.affil.edit').fadeIn();	
+    }); 
+    $('.affil.home').fadeOut(function () {
+        $('.affil.edit').fadeIn();	
+    });  
     $.ajax({
         type: "GET",
         url: "report-affiliation/" + pk + "/update/",
@@ -254,7 +274,7 @@ function updateAffiliation(pk) {
             //console.log(data);
                         
             var val = $("#affil-edit").find('#id_span_class').val();            
-            $('.'+val).removeClass('saved');
+            $('.'+val).removeClass('saved').addClass('updating');
             $('#affil-form').attr('action',"report-affiliation/" + pk + "/update/");
             
             update = true;
@@ -301,9 +321,21 @@ function deleteAppeal(pk,sc) {
 
 function showAffiliations() {
     $('#affil-edit').fadeOut(function(){$('#affil-home').fadeIn()});
+    $('.affil.edit').fadeOut(function () {
+        $('.affil.home').fadeIn();	
+    });
+    updateReviewHTML();
+    update = false;
 }
 
 function addSource(val, update) {
+    $('.updating').removeClass('updating').addClass('saved');
+    $('.edit:not(.source)').hide(function () {
+    	$('.home:not(.source)').show();
+    });
+    $('.source.home').fadeOut(function () {
+       $('.source.edit').fadeIn();	
+    });
     if  (update){
         if (val){   
             $('#reportSource-edit :input.textarea').val(val).change();
@@ -326,7 +358,14 @@ function addSource(val, update) {
     }
 }
 
-function updateSource(pk) {   
+function updateSource(pk) {
+    $('.updating').removeClass('updating').addClass('saved');
+    $('.edit:not(.source)').hide(function () {
+    	$('.home:not(.source)').show();
+    });
+    $('.source.home').fadeOut(function () {
+       $('.source.edit').fadeIn();	
+    });   
     $.ajax({
         type: "GET",
         url: "report-source/" + pk + "/update/",
@@ -338,7 +377,7 @@ function updateSource(pk) {
             update = true;
                         
             var val = $("#reportSource-edit").find('#id_span_class').val();            
-            $('.'+val).removeClass('saved');
+            $('.'+val).removeClass('saved').addClass('updating');
             $('#reportSource-form').attr('action',"report-source/" + pk + "/update/");
             highlightedText = $('.'+val).text();
         },
@@ -347,9 +386,21 @@ function updateSource(pk) {
 
 function showSources() {
     $('#reportSource-edit').fadeOut(function(){$('#reportSource-home').fadeIn()});
+    $('.source.edit').fadeOut(function () {
+       $('.source.home').fadeIn();	
+    });
+    updateReviewHTML();
+    update = false;
 }
 
 function addAppeal(val, update) {
+    $('.updating').removeClass('updating').addClass('saved');
+    $('.edit:not(.appeal)').hide(function () {
+    	$('.home:not(.appeal)').show();
+    });
+    $('.appeal.home').fadeOut(function () {
+       $('.appeal.edit').fadeIn();	
+    });
     if  (update){
         if (val){   
             $('#appeal-edit :input.textarea').val(val).change();
@@ -372,7 +423,14 @@ function addAppeal(val, update) {
     }
 }
 
-function updateAppeal(pk) {   
+function updateAppeal(pk) { 
+    $('.updating').removeClass('updating').addClass('saved');
+    $('.edit:not(.appeal)').hide(function () {
+    	$('.home:not(.appeal)').show();
+    });
+    $('.appeal.home').fadeOut(function () {
+       $('.appeal.edit').fadeIn();	
+    });  
     $.ajax({
         type: "GET",
         url: "report-appeal/" + pk + "/update/",
@@ -385,7 +443,7 @@ function updateAppeal(pk) {
             update = true;
                         
             var val = $("#appeal-edit").find('#id_span_class').val();            
-            $('.'+val).removeClass('saved');
+            $('.'+val).removeClass('saved').addClass('updating');
             $('#appeal-form').attr('action',"report-appeal/" + pk + "/update/");
             highlightedText = $('.'+val).text();
         },
@@ -394,7 +452,24 @@ function updateAppeal(pk) {
 
 function showAppeals() {
     $('#appeal-edit').fadeOut(function(){$('#appeal-home').fadeIn()});
+   	$('.appeal.edit').fadeOut(function () {
+       $('.appeal.home').fadeIn();	
+    });
+    updateReviewHTML();
+    update = false;
 }
+
+// Action Functions
+
+function showActions() {
+    $('#action-edit').fadeOut(function(){$('#action-home').fadeIn()});
+    $('.action.edit').fadeOut(function () {
+       $('.action.home').fadeIn();	
+    });
+    updateReviewHTML();
+    update = false;
+}
+
 
 function insertString(str,txt,pos){
     return [txt.slice(0,pos),str,txt.slice(pos)].join('');
@@ -452,6 +527,9 @@ $(document).ready(function () {
 	   success: function () {
 	   	   $('.affil-'+highlightedText.hashCode()).addClass('saved');
 	   	   $('#affil-edit').fadeOut(function(){$('#affil-home').fadeIn();});
+	   	   $('.affil.edit').fadeOut(function () {
+               $('.affil.home').fadeIn();	
+           });
 	   	   update = false;
 	   },
 	});
@@ -462,6 +540,9 @@ $(document).ready(function () {
 	   success: function () {
 	   	   $('.source-'+highlightedText.hashCode()).addClass('saved');
 	   	   $('#reportSource-edit').fadeOut(function(){$('#reportSource-home').fadeIn();});
+	   	   $('.source.edit').fadeOut(function () {
+               $('.source.home').fadeIn();	
+           });
 	   	   update = false;
 	   },
 	});
@@ -473,6 +554,22 @@ $(document).ready(function () {
 	       console.log(highlightedText);
 	   	   $('.appeal-'+highlightedText.hashCode()).addClass('saved');
 	   	   $('#appeal-edit').fadeOut(function(){$('#appeal-home').fadeIn();});
+	   	   $('.appeal.edit').fadeOut(function () {
+               $('.appeal.home').fadeIn();	
+           });
+	   	   update = false;
+	   },
+	});
+	$('#action-form').ajaxForm({
+	   target: $('#action-home'),
+	   beforeSubmit: saveSpan,
+	   success: function () {
+	       console.log(highlightedText);
+	   	   $('.action-'+highlightedText.hashCode()).addClass('saved');
+	   	   $('#action-edit').fadeOut(function(){$('#action-home').fadeIn();});
+	   	   $('.action.edit').fadeOut(function () {
+               $('.action.home').fadeIn();	
+           });
 	   	   update = false;
 	   },
 	});

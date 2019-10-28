@@ -132,7 +132,7 @@ class UpdateReport(UpdateView):
     template_name = 'rate_doc/report-update.html'
     
     def get_success_url(self):
-        return reverse_lazy('list-report', kwargs={'pk':self.kwargs.get('pk')})
+        return reverse_lazy('detail-report', kwargs={'pk':self.kwargs.get('pk')})
     
     def authors(self):
         return Author.objects.all()
@@ -144,11 +144,15 @@ class UpdateReport(UpdateView):
         return MediaType.objects.all()
         
     def initial_values(self):
-        pk = self.kwargs.get('pk')        
+        pk = self.kwargs.get('pk')
+        media_org = Review.objects.get(pk=pk).report.media_org
+        media_type = None
+        if media_org:
+            media_type = media_org.media_type
         dictionary = {
             'author': Review.objects.get(pk=pk).report.author.values_list('name', flat=True),
-            'media_org': [Review.objects.get(pk=pk).report.media_org],
-            'media_type': [Review.objects.get(pk=pk).report.media_org.media_type],
+            'media_org': [media_org],
+            'media_type': [media_type],
         }       
         return dictionary
     
