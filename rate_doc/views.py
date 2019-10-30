@@ -130,6 +130,7 @@ class UpdateReport(UpdateView):
     model = Report
     form_class = ReportForm
     template_name = 'rate_doc/report-update.html'
+    pk_url_kwarg = 'report_pk' 
     
     def get_success_url(self):
         return reverse_lazy('detail-report', kwargs={'pk':self.kwargs.get('pk')})

@@ -7,7 +7,7 @@ urlpatterns = [
     path(r'<int:pk>/rate', login_required(edit_doc), name='rate-doc'),
     path(r'<int:pk>/preview', login_required(preview), name='preview-doc'),
 
-    path(r'<int:pk>/report/update/', login_required(UpdateReport.as_view()), name='update-report'),
+    path(r'<int:pk>/report/<int:report_pk>/update/', login_required(UpdateReport.as_view()), name='update-report'),
     path(r'<int:pk>/report/detail/', login_required(ReviewDetail.as_view(template_name='rate_doc/report-detail.html')), name='detail-report'),
     path(r'<int:pk>/report/html/', login_required(ReviewDetail.as_view(template_name='rate_doc/report-html.html')), name='report-html'),        
     
