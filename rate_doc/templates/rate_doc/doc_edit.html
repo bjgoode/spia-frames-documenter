@@ -162,7 +162,7 @@ String.prototype.hashCode = function() {
 function updateReviewHTML(){
     $.ajax({
         type: "GET",
-        url: "/rate_doc/{{doc.report.id}}/report/html/",
+        url: "/rate_doc/{{doc.id}}/report/html/",
         success: function(data){
             $('#report-html').html(data);
         }
@@ -222,7 +222,7 @@ function showReport() {
 var update = false;
 
 function addAffiliation(val, update) {
-    $('.updating').removeClass('updating').addClass('saved');
+    $('.updating:not(.affil-highight)').removeClass('updating').addClass('saved');
     $('.edit:not(.affil)').hide(function () {
     	$('.home:not(.affil)').show();
     });
@@ -254,7 +254,7 @@ function addAffiliation(val, update) {
 }
 
 function updateAffiliation(pk) {
-    $('.updating').removeClass('updating').addClass('saved');
+    $('.updating:not(.affil-highight)').removeClass('updating').addClass('saved');
     $('.edit:not(.affil)').hide(function () {
     	$('.home:not(.affil)').show();
     });
@@ -329,7 +329,7 @@ function showAffiliations() {
 }
 
 function addSource(val, update) {
-    $('.updating').removeClass('updating').addClass('saved');
+    $('.updating:not(.src-highlight)').removeClass('updating').addClass('saved');
     $('.edit:not(.source)').hide(function () {
     	$('.home:not(.source)').show();
     });
@@ -353,13 +353,14 @@ function addSource(val, update) {
                 }
                 $.scrollify.move("#source-detail");
                 $('#reportSource-home').fadeOut(function(){$('#reportSource-edit').fadeIn();});
+                $('#reportSource-form').attr('action',"report-source/add/");
             }
         });
     }
 }
 
 function updateSource(pk) {
-    $('.updating').removeClass('updating').addClass('saved');
+    $('.updating:not(.src-highlight)').removeClass('updating').addClass('saved');
     $('.edit:not(.source)').hide(function () {
     	$('.home:not(.source)').show();
     });
@@ -394,7 +395,7 @@ function showSources() {
 }
 
 function addAppeal(val, update) {
-    $('.updating').removeClass('updating').addClass('saved');
+    $('.updating:not(.appeal-highlight)').removeClass('updating').addClass('saved');
     $('.edit:not(.appeal)').hide(function () {
     	$('.home:not(.appeal)').show();
     });
@@ -418,13 +419,14 @@ function addAppeal(val, update) {
                 }
                 $.scrollify.move("#appeal-detail");
                 $('#appeal-home').fadeOut(function(){$('#appeal-edit').fadeIn();});
+                $('#appeal-form').attr('action',"report-appeal/add/");
             }
         });
     }
 }
 
 function updateAppeal(pk) { 
-    $('.updating').removeClass('updating').addClass('saved');
+    $('.updating:not(.appeal-highlight)').removeClass('updating').addClass('saved');
     $('.edit:not(.appeal)').hide(function () {
     	$('.home:not(.appeal)').show();
     });
