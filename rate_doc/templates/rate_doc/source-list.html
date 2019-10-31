@@ -1,8 +1,10 @@
 <ul class="list-group mb-1">
 {% for reportSource in doc.reportsource_set.all %}
     <li class="list-group-item list-group-item-light d-flex">{{reportSource}}
-        <a class="ml-auto px-1" href="#" onclick="updateSource({{reportSource.pk}})"><span class="ml-auto px-1 glyphicon glyphicon-pencil"></span></a>
-        <a class="px-1" href="#source-detail" onclick="deleteSource({{reportSource.pk}},'{{reportSource.span_class}}');"><span class="px-1 glyphicon glyphicon-trash"></span></a>
+        {% if not doc.rated %}}
+            <a class="ml-auto px-1" href="#" onclick="updateSource({{reportSource.pk}})"><span class="ml-auto px-1 glyphicon glyphicon-pencil"></span></a>
+            <a class="px-1" href="#source-detail" onclick="deleteSource({{reportSource.pk}},'{{reportSource.span_class}}');"><span class="px-1 glyphicon glyphicon-trash"></span></a>
+        {% endif %}
     </li>
 {% empty %}
     No Document Sources Identified.

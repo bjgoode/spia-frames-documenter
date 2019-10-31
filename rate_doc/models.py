@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
 from django import forms
+from django.utils import timezone
 
 from django_extensions.db.models import TimeStampedModel
 
@@ -76,6 +77,9 @@ class Report(TimeStampedModel):
     media_org = models.ForeignKey('MediaOrg', on_delete=models.CASCADE, blank=True, null=True)
     author = models.ManyToManyField('Author')
     report_text_html = models.TextField()
+    
+    def author_list(self):
+        return ", ".join([s.name for s in self.author.all()])
 
 class ReportSource(TimeStampedModel):
     affiliation = models.ForeignKey('ReportSourceAffiliation', on_delete=models.CASCADE)

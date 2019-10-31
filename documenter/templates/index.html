@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load humanize %}
 
 {% block title %}
 Documenter
@@ -10,25 +11,33 @@ Documenter
 
 
 <div class="row">
-    <div class="col-3 pt-5 flex-fill bg-dark text-light" >
-        <h3>Project Queue:</h3>
-        <div class="list-group my-2">
+    <div class="col-3 pt-3 px-0 flex-fill bg-dark text-light" >
+
+        <p class="px-2" style="font-weight: bold; font-size: 8pt;">
+            There are {{user.assigned_user.all.count}} documents to review. Select a document below or click 'NEXT' above to begin reviewing.
+            
+        </p>    
+    
+        <h6 class="px-2">Document Queue:</h6>       
+        
+        <div class="list-group my-2 mx-0">
         
         {% for doc in user.assigned_user.all %}
-        <a href="{% url 'rate-doc' pk=doc.pk %}" class="list-group-item list-group-item-action bg-dark text-light border-light">
-            <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1 text-truncate">{{doc.report.author_set.all}} ({{doc.report.media_org}})</h5>
-              <small>3 days ago</small>
-            </div>
-            <p class="mb-1">{{doc.report.title}}</p>
-            <small>
+        <a href="{% url 'rate-doc' pk=doc.pk %}" class="list-group-item px-1 py-1 list-group-item-action bg-dark text-light rounded-0 border-light border-left-0 border-right-0">         
+          <div class="row">
             {% if doc.rated %}
-                Rated on: {{doc.rated_date}}
+            <span class="m-auto col-1 glyphicon glyphicon-check h-100"></span>
             {% else %}
-                Not yet rated.
-            {% endif %}                
-                </small>
-            
+            <span class="m-auto col-1 glyphicon glyphicon-unchecked h-100"></span>
+            {% endif %}            
+            <div class="col-11 d-flex-column py-0 w-100">
+                <div class="d-flex py-0">
+                    <p style="font-family: 'Times New Roman', Times, serif; font-size: 12pt" class="flex-shrink-1 mx-0 my-0 text-truncate">{{doc.report.title|title}}</p>
+                    <span style="font-size: 8pt; border-bottom-left-radius: 1em; border: 1px solid #888888; border-top: none; border-right: none;" class="flex-shrink-0 px-1 pb-0 my-0 ml-auto">{{doc.modified|naturaltime}}</span>
+                </div>              
+              <p class="my-0 py-0 text-truncate" style="font-size: 8pt"><span style="font-weight: bold;">({{doc.report.media_org}})</span> {{doc.report.author_list}}</p>
+            </div>
+          </div>  
         </a>
         {% empty %}
         

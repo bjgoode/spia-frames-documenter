@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, render_to_response
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
+from django.utils import timezone
 from django.views.generic import ListView, DetailView
 
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
@@ -386,6 +387,15 @@ class DeleteAction(DeleteView):
         return reverse_lazy('list-action', kwargs={'pk':self.kwargs.get('pk')})
     pass
     
+
+def finalize(request, pk):
+    doc = Review.objects.get(pk=pk)
+    doc.rated = True
+    doc.rated_date = timezone.now()
+    
+    doc.save()
+    
+    return HttpResponseRedirect(reverse('rate-doc', kwargs={'pk': doc.id}))
     
 
 def edit_doc(request, pk):
@@ -395,20 +405,27 @@ def edit_doc(request, pk):
     else:
         doc = Review.objects.get(pk=pk)        
         
-        report_form = ReportForm(instance=doc.report)
-        reportSource_form = ReportSourceForm()
-        appeal_form = AppealForm
-        reportsourceaffiliation_form = ReportSourceAffiliationForm
+        if doc.rated:
+            outDict = {
+                'doc': doc
+            }
+            return render(request, template_name='rate_doc/doc_final.html', context=outDict)
+            
+        else:
+            report_form = ReportForm(instance=doc.report)
+            reportSource_form = ReportSourceForm()
+            appeal_form = AppealForm
+            reportsourceaffiliation_form = ReportSourceAffiliationForm
         
-        outDict = {
-            'doc': doc,
-            'report_form': report_form,
-            'reportsourceaffiliation_form': reportsourceaffiliation_form,
-            'reportSource_form': reportSource_form,
-            'appeal_form': appeal_form,
-        }      
+            outDict = {
+                'doc': doc,
+                'report_form': report_form,
+                'reportsourceaffiliation_form': reportsourceaffiliation_form,
+                'reportSource_form': reportSource_form,
+                'appeal_form': appeal_form,
+            }      
         
-    return render(request, template_name='rate_doc/doc_edit.html', context=outDict)
+            return render(request, template_name='rate_doc/doc_edit.html', context=outDict)
 
 def preview(request, pk):
 
@@ -437,7 +454,7 @@ class ReviewList(ListView):
 def get_next(request):
 
     unrated_docs = Review.objects.filter(rated=False)
-    assigned_docs = unrated_docs.filter(assignedTo=request.user.pk)
+    assigned_docs = unrated_docs.filter(assignedTo=request.user.pk).order_by('pk')
     
     if unrated_docs:
         if assigned_docs:
