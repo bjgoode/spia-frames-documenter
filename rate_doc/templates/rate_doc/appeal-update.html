@@ -21,13 +21,15 @@ $(document).ready(function () {
         multiple: true,
     });
     
+    
     {% for f in view.frames %}
         var newOption = new Option('{{f}}', '{{f}}', false, false);
         $('#id_frame_input').append(newOption);
     {% endfor %}
     
+    $('#id_source').empty();
     {% for s in view.sources %}
-        var newOption = new Option('{{s}}', '{{s}}', false, false);
+        var newOption = new Option('{{s}}', '{{s.pk}}', false, false);
         $('#id_source').append(newOption);
     {% endfor %}
     
@@ -36,14 +38,16 @@ $(document).ready(function () {
 	$(".select2-container").css({'width': '100%' });
 	
 	{% for k, vs in view.initial_values.items %}
-	console.log('{{vs}}');
-	console.log('{{k}}');
-	   $('#id_{{k}}').val([ 
+	   console.log('{{vs}}');
+	   console.log('{{k}}');
+	   var val = [ 
             {% for v in vs %}	   
 	       '{{v}}',                  
 	        {% endfor %}            
-	   ]).trigger('change');
+	   ]
+	   console.log(val);
+	   $('#id_{{k}}').val(val).trigger('change');
 	{% endfor %}
-	console.log($('#id_source_input'));
+	console.log($('#id_source'));
 });
 </script>

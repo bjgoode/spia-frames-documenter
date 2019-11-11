@@ -2,6 +2,11 @@ from django import forms
 from .models import *      
 
 
+class ActionForm(forms.ModelForm):
+    class Meta:
+        model=Action
+        fields='__all__'
+
 class AffiliationForm(forms.ModelForm):
     class Meta:
         model=Affiliation
@@ -95,6 +100,21 @@ class ReportForm(forms.ModelForm):
             'report_text_html',  
         ]
 
+
+class ReportActionForm(forms.ModelForm):   
+    review_html = forms.CharField(
+        required=True,
+        widget=forms.HiddenInput(),    
+    )
+    
+    class Meta:
+        model=ReportAction
+        exclude = ['report', 'review']
+        widgets = {
+            'span_class': forms.HiddenInput(),    
+        }
+
+
 class ReportSourceForm(forms.ModelForm):
 
     source_input = forms.CharField(
@@ -118,8 +138,9 @@ class ReportSourceForm(forms.ModelForm):
         model=ReportSource
         exclude = ['report','review','expertise','source']
         widgets = {
-            'span_class': forms.HiddenInput(),    
+            'span_class': forms.HiddenInput(),
         }
+    
     
 class ReportSourceAffiliationForm(forms.ModelForm):
 
@@ -151,6 +172,7 @@ class ReportSourceAffiliationForm(forms.ModelForm):
         widgets = {
             'span_class': forms.HiddenInput(),    
         } 
+
 
 class SourceForm(forms.ModelForm):
     class Meta:

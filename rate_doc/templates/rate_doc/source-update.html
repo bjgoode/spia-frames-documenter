@@ -18,11 +18,13 @@ $(document).ready(function () {
         tags: true,
         placeholder: 'Select or Type New Entry.',
     });
+
+    $('#id_affiliation').empty();    
     
     {% for a in view.affiliations %}
-        var newOption = new Option('{{a.name}}', '{{a.id}}', false, false);
+        var newOption = new Option('{{a.affiliation}}', '{{a.id}}', false, false);
         $('#id_affiliation').append(newOption);
-    {% endfor %}
+    {% endfor %}  
     
     {% for s in view.sources %}
         var newOption = new Option('{{s}}', '{{s}}', false, false);

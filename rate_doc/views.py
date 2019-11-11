@@ -68,6 +68,7 @@ class AddSource(CreateView):
     model = ReportSource
     form_class = ReportSourceForm
     template_name = 'rate_doc/source-update.html'
+    
     def get_success_url(self):
         return reverse_lazy('list-source', kwargs={'pk':self.kwargs.get('pk')})
     
@@ -90,7 +91,8 @@ class AddSource(CreateView):
         return super().form_valid(form)
         
     def affiliations(self):
-        return
+        review = Review.objects.get(pk=self.kwargs.get('pk',None))
+        return review.reportsourceaffiliation_set.all()
         
     def sources(self):
         return Source.objects.all()
@@ -120,11 +122,33 @@ class AddAppeal(CreateView):
     
     def frames(self):
         return Frame.objects.all()
+        
+    def sources(self):
+        review = Review.objects.get(pk=self.kwargs.get('pk',None))
+        source_ids = review.reportsource_set.values_list('source')
+        return Source.objects.filter(pk__in = source_ids)
+        
     
-class AddAction(CreateView):
+class AddReportAction(CreateView):
+    model = ReportAction
+    form_class = ReportActionForm
+    template_name = 'rate_doc/action-update.html'
+    
     def get_success_url(self):
         return reverse_lazy('list-action', kwargs={'pk':self.kwargs.get('pk')})
-    pass
+    
+    def form_valid(self, form):
+        
+        review = Review.objects.get(pk=self.kwargs.get('pk', None))
+        review.review_html = form.cleaned_data['review_html']
+        review.save()
+        
+        form.instance.report = review.report
+        form.instance.review = review
+        form.save()
+        
+        return super().form_valid(form)
+
 
 ## AJAX Update Classes
 class UpdateReport(UpdateView):
@@ -178,6 +202,27 @@ class UpdateReport(UpdateView):
         
         return super().form_valid(form)
         
+
+class UpdateReportAction(UpdateView):
+    model = ReportAction
+    form_class = ReportActionForm
+    template_name = 'rate_doc/action-update.html'
+    pk_url_kwarg = 'action_pk'
+    
+    def get_success_url(self):
+        return reverse_lazy('list-action', kwargs={'pk':self.kwargs.get('pk')})
+        
+    def form_valid(self, form):
+        
+        review = Review.objects.get(pk=self.kwargs.get('pk', None))
+        review.review_html = form.cleaned_data['review_html']
+        review.save()
+        
+        form.instance.review = review
+        form.save()  
+        
+        return super().form_valid(form) 
+    
         
 class UpdateAffiliation(UpdateView):
     model = ReportSourceAffiliation
@@ -246,7 +291,8 @@ class UpdateSource(UpdateView):
         return super().form_valid(form)        
         
     def affiliations(self):
-        return
+        review = Review.objects.get(pk=self.kwargs.get('pk',None))
+        return review.reportsourceaffiliation_set.all()
         
     def sources(self):
         return Source.objects.all()
@@ -254,9 +300,10 @@ class UpdateSource(UpdateView):
     def initial_values(self):
         pk = self.kwargs.get('source_pk')       
         dictionary = {
-            'affiliation': [ReportSource.objects.get(pk=pk).affiliation.pk],
-            'source_input':      [ReportSource.objects.get(pk=pk).source],
-        }  
+            'affiliation': [ReportSource.objects.get(pk=pk).affiliation.id],
+            'source_input':   [ReportSource.objects.get(pk=pk).source],
+        }
+        print(dictionary)
         return dictionary
 
 
@@ -286,19 +333,20 @@ class UpdateAppeal(UpdateView):
     
     def frames(self):
         return Frame.objects.all()
+    
+    def sources(self):
+        review = Review.objects.get(pk=self.kwargs.get('pk',None))
+        source_ids = review.reportsource_set.values_list('source')
+        sources = Source.objects.filter(pk__in = source_ids).all()
+        return sources
         
     def initial_values(self):
         pk = self.kwargs.get('appeal_pk')       
         dictionary = {
             'frame_input': Appeal.objects.get(pk=pk).frame.values_list('desc', flat=True),
-            'source_input': [Appeal.objects.get(pk=pk).source],
+            'source': Appeal.objects.get(pk=pk).source.values_list('pk', flat=True),
         }  
         return dictionary
-
-class UpdateAction(UpdateView):
-    def get_success_url(self):
-        return reverse_lazy('list-action', kwargs={'pk':self.kwargs.get('pk')})
-    pass
     
 class ReviewDetail(DetailView):
     model = Review
@@ -313,20 +361,20 @@ class DeleteSource(DeleteView):
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
         
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs): 
+        return super().post(request, *args, **kwargs)
         
+    def get_success_url(self):
         rs = ReportSource.objects.get(pk=self.kwargs.get('source_pk'))
         soup = bs4.BeautifulSoup(rs.review.review_html)
         span = soup.find('span', class_=rs.span_class)
         if span:
             span.unwrap()
             rs.review.review_html = str(soup)
-            rs.review.save() 
-        
-        return super().post(request, *args, **kwargs)
-        
-    def get_success_url(self):
+            rs.review.save()
+            
         return reverse_lazy('list-source', kwargs={'pk':self.kwargs.get('pk')})
+
     
     
 class DeleteAffiliation(DeleteView):
@@ -337,55 +385,64 @@ class DeleteAffiliation(DeleteView):
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
         
-    def post(self, request, *args, **kwargs):
-
+    def post(self, request, *args, **kwargs):  
+        return super().post(request, *args, **kwargs)
+        
+    def get_success_url(self):
         aff = ReportSourceAffiliation.objects.get(pk=self.kwargs.get('affil_pk'))
         soup = bs4.BeautifulSoup(aff.review.review_html)
         span = soup.find('span', class_=aff.span_class)
         if span:
             span.unwrap()
             aff.review.review_html = str(soup)
-            aff.review.save()   
-        
-        return super().post(request, *args, **kwargs)
-        
-    def get_success_url(self):
+            aff.review.save()
         return reverse_lazy('list-affil', kwargs={'pk':self.kwargs.get('pk')}) 
     
 
 class DeleteAppeal(DeleteView):
     model = Appeal
-    success_url = '/'
     pk_url_kwarg = 'appeal_pk'
     template_name = 'rate_doc/confirm-delete.html'
     
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
     
-    def post(self, request, *args, **kwargs):
-
+    def post(self, request, *args, **kwargs):  
+        return super().post(request, *args, **kwargs)
+        
+    def get_success_url(self):
         html_object = Appeal.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
         soup = bs4.BeautifulSoup(html_object.review.review_html)
         span = soup.find('span', class_=html_object.span_class)
         if span:
             span.unwrap()
             html_object.review.review_html = str(soup)
-            html_object.review.save()   
-        
-        return super().post(request, *args, **kwargs)
-        
-    def get_success_url(self):
+            html_object.review.save() 
         return reverse_lazy('list-appeal', kwargs={'pk':self.kwargs.get('pk')})
     
     
-class DeleteAction(DeleteView):
+class DeleteReportAction(DeleteView):
+
+    model = ReportAction
+    pk_url_kwarg = 'action_pk'
+    template_name = 'rate_doc/confirm-delete.html'
     
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
-        
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+           
     def get_success_url(self):
+        html_object = ReportAction.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
+        soup = bs4.BeautifulSoup(html_object.review.review_html)
+        span = soup.find('span', class_=html_object.span_class)
+        
+        if span:
+            span.unwrap()
+            html_object.review.review_html = str(soup)
+            html_object.review.save()
         return reverse_lazy('list-action', kwargs={'pk':self.kwargs.get('pk')})
-    pass
     
 
 def finalize(request, pk):

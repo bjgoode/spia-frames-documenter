@@ -27,10 +27,10 @@ urlpatterns = [
     path(r'<int:pk>/report-appeal/<int:appeal_pk>/update/', login_required(UpdateAppeal.as_view()), name='update-appeal'),
     path(r'<int:pk>/report-appeal/<int:appeal_pk>/delete/', login_required(DeleteAppeal.as_view()), name='delete-appeal'),
     
-    path(r'<int:pk>/report-action/add/', login_required(AddAction.as_view()), name='add-action'),
+    path(r'<int:pk>/report-action/add/', login_required(AddReportAction.as_view()), name='add-action'),
     path(r'<int:pk>/report-action/list/', login_required(ReviewDetail.as_view(template_name ='rate_doc/action-list.html')), name='list-action'),
-    path(r'<int:pk>/report-action/<int:action_pk>/update/', login_required(UpdateAction.as_view()), name='update-action'),
-    path(r'<int:pk>/report-action/<int:action_pk>/delete/', login_required(DeleteAction.as_view()), name='delete-action'),
+    path(r'<int:pk>/report-action/<int:action_pk>/update/', login_required(UpdateReportAction.as_view()), name='update-action'),
+    path(r'<int:pk>/report-action/<int:action_pk>/delete/', login_required(DeleteReportAction.as_view()), name='delete-action'),
     
     path(r'docs/', login_required(ReviewList.as_view()), name='doc-list'),
     path(r'success/', TemplateView.as_view(template_name='rate_doc/success.html'),name='success'),

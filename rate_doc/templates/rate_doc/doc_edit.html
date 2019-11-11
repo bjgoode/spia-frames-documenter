@@ -13,6 +13,7 @@
   <button onClick="copyDocumentText('Affiliation')" class="btn btn-primary btn-sm" type="button"><b>Affiliation</b></button>
   <button onClick="copyDocumentText('Source')" class="btn btn-primary btn-sm" type="button"><b>Source</b></button>
   <button onClick="copyDocumentText('Appeal')" class="btn btn-primary btn-sm" type="button"><b>Appeal</b></button>
+  <button onClick="copyDocumentText('Action')" class="btn btn-primary btn-sm" type="button"><b>Action</b></button>
 </div>
 
 <div id="report-box" style="overflow-y: auto; padding-top: 45px; z-index: 100;" class="col-8 h-100 fixed-top ml-auto d-flex-inline justify-content-center bg-secondary">
@@ -125,13 +126,7 @@
                     <button type="button" style="display:none;" onClick='showAction();' class="action edit btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
                 </div>
                 <div id="action-home" class="action home">
-                    <ul class="list-group mb-1">
-                    {% for a in doc.reportaction_set.all %}
-                        <li class="list-group-item list-group-item-light d-flex">{{a}}<span class="ml-auto px-1 glyphicon glyphicon-pencil"></span><span class="px-1 glyphicon glyphicon-trash"></span></li>
-                    {% empty %}
-                        No Document Actions Identified.
-                    {% endfor %}
-                    </ul>
+                    {% include 'rate_doc/action-list.html' %}
                 </div>
                 <div id="action-edit" class="w-100 action edit" style="display:none;"></div>
             </div>
@@ -319,6 +314,18 @@ function deleteAppeal(pk,sc) {
     });
 }
 
+function deleteAction(pk,sc) {   
+    $.ajax({
+        type: "GET",
+        url: "report-action/" + pk + "/delete/",
+        success: function (data) {
+        	$('#action-home').html(data);
+        	console.log($('.'+sc));
+        	$('.'+sc).contents().unwrap();
+        },
+    });
+}
+
 function showAffiliations() {
     $('#affil-edit').fadeOut(function(){$('#affil-home').fadeIn()});
     $('.affil.edit').fadeOut(function () {
@@ -462,8 +469,65 @@ function showAppeals() {
 }
 
 // Action Functions
+function addAction(val, update) {
+    $('.updating:not(.action-highlight)').removeClass('updating').addClass('saved');
+    $('.edit:not(.action)').hide(function () {
+    	$('.home:not(.action)').show();
+    });
+    $('.action.home').fadeOut(function () {
+       $('.action.edit').fadeIn();	
+    });
+    if  (update){
+        if (val){   
+            $('#action-edit :input.textarea').val(val).change();
+            $('#action-edit #id_span_class').val('action-'+val.hashCode()).change();    
+        }
+    } else {
+        $.ajax({
+            type: "GET",
+            url: "report-action/add/",
+            success: function(data){
+                $('#action-edit').html(data);
+                if (val) {
+                    $('#action-edit :input.textarea').val(val).change();
+                    $('#action-edit #id_span_class').val('action-'+val.hashCode()).change();
+                }
+                $.scrollify.move("#action-detail");
+                $('#action-home').fadeOut(function(){$('#action-edit').fadeIn();});
+                $('#action-form').attr('action',"report-action/add/");
+            }
+        });
+    }
+}
 
-function showActions() {
+function updateAction(pk) { 
+    $('.updating:not(.action-highlight)').removeClass('updating').addClass('saved');
+    $('.edit:not(.action)').hide(function () {
+    	$('.home:not(.action)').show();
+    });
+    $('.action.home').fadeOut(function () {
+       $('.action.edit').fadeIn();	
+    });  
+    $.ajax({
+        type: "GET",
+        url: "report-action/" + pk + "/update/",
+        success: function(data){
+            console.log('Action: ' + pk);
+            $('#action-edit').html(data);
+            $.scrollify.move("#action-detail");
+            $('#action-home').fadeOut(function(){$('#action-edit').fadeIn();});
+            
+            update = true;
+                        
+            var val = $("#action-edit").find('#id_span_class').val();            
+            $('.'+val).removeClass('saved').addClass('updating');
+            $('#action-form').attr('action',"report-action/" + pk + "/update/");
+            highlightedText = $('.'+val).text();
+        },
+    });
+}
+
+function showAction() {
     $('#action-edit').fadeOut(function(){$('#action-home').fadeIn()});
     $('.action.edit').fadeOut(function () {
        $('.action.home').fadeIn();	
@@ -494,6 +558,11 @@ function copyDocumentText(e){
     if(e === 'Appeal'){
         addAppeal(highlightedText, update);
         $(span).addClass('appeal-highlight highlight p-1 new rounded appeal-'+highlightedText.hashCode());
+    }
+    
+    if(e === 'Action'){
+        addAction(highlightedText, update);
+        $(span).addClass('action-highlight highlight p-1 new rounded action-'+highlightedText.hashCode());
     }
     
     var rangeText = range.extractContents(); 
@@ -620,5 +689,11 @@ $(document).ready(function () {
         background-color: rgba(0,180,0,0.5);
         color: rgba(255,255,255,1);    
     }
+    .action-highlight{
+        background-color: rgba(150, 110, 80, 0.5);
+        color: rgba(255,255,255,1);    
+    }
+  
+    
 </style>
 {% endblock %}
