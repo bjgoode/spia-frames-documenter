@@ -23,6 +23,8 @@ gunicorn = "*"
 jupyterlab = "*"
 grep = "*"
 lazyme = "*"
+django-auth-ldap = "*"
+psycopg2-binary = "*"
 
 [requires]
 python_version = "3.6"
