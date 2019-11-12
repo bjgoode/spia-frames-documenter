@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Documenter
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="h-100 col-3 pt-5 flex-grow-1 bg-dark text-light" style="overflow-y: auto;" >
+        <h3>Document Queue:</h3>
+        <div class="list-group h-auto my-2">
+        
+        {% for doc in user.assigned_user.all %}
+        <a href="{% url 'rate-doc' pk=doc.pk %}" class="list-group-item list-group-item-action bg-dark text-light border-light">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">{{doc.report.title|truncatechars:30}}</h5>
+              <small>3 days ago</small>
+            </div>
+            <p class="mb-1">{{doc.report.author_set.all}} ({{doc.report.media_org}})</p>
+            <small>
+            {% if doc.rated %}
+                Rated on: {{doc.rated_date}}
+            {% else %}
+                Not yet rated.
+            {% endif %}                
+                </small>
+            
+        </a>
+        {% empty %}
+        
+        No Documents to Review.
+        
+        {% endfor %}
+        
+        </div>
+    </div>
+</div>
+
+<div id="preview-box" style="padding-top: 0px; z-index: 100;" class="col-9 h-100 fixed-top ml-auto d-flex flex-column justify-content-center bg-secondary">
+    <div class="row flex-fill bg-secondary border-bottom h-50" style="overflow-y: auto;">
+        <div class="container-fluid d-flex-inline flex-column mt-5 p-3 bg-white border" style="position: relative; height: auto; box-shadow: 5px 10px; margin-bottom: 100px;">
+            <h2>{{doc.report.title | title}}</h2>
+            <div id="report-container" class="bg-white">
+                <div id="report-html" class="text-dark">{% with document=doc.review_html|safe %}{{document|linebreaksbr}}{% endwith %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="row h-50 flex-fill bg-secondary d-flex">
+        <div class="h-100 col-3 flex-fill border-right overflow-auto">
+            <h5>Affiliations</h5>
+            {% for a in reportsourceaffiliations.all %}
+                <button type="button" class="w-100 btn affil-highlight text-truncate my-1" style="font-size: 10pt;">{{a}}</button>
+            {% empty %}
+                No Affiliations Identified.
+            {% endfor %}        
+        </div>
+        <div class="h-100 col-3 flex-fill border-right overflow-auto">
+            <h5>Sources</h5>        
+            {% for s in report_sources.all %}
+                <button type="button" class="w-100 btn src-highlight text-truncate my-1" style="font-size: 10pt;">{{s}}</button>
+            {% empty %}
+                No Sources Identified.
+            {% endfor %}
+        </div>
+        <div class="h-100 col-3 flex-fill border-right overflow-auto">
+            <h5>Appeals</h5>  
+            {% for a in appeals.all %}
+                <button type="button" class="w-100 btn appeal-highlight text-truncate my-1" style="font-size: 10pt;">{{a}}</button>
+            {% empty %}
+                No Appeals Identified.
+            {% endfor %}      
+        </div>
+        <div class="h-100 col-3 flex-fill overflow-auto">
+            <h5>Actions</h5>   
+            {% for a in actions.all %}
+                {{a}}
+            {% empty %}
+                No Actions Identified.
+            {% endfor %}       
+        </div>    
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+
+<style type="text/css">
+    .affil-highlight{
+        background-color: rgba(0,0,0,0.5);
+        color: rgba(255,255,255,1);    
+    }
+    .src-highlight{
+        background-color: rgba(100,0,0,0.5);
+        color: rgba(255,255,255,1);    
+    }
+    .appeal-highlight{
+        background-color: rgba(0,180,0,0.5);
+        color: rgba(255,255,255,1);    
+    }
+</style>
+{% endblock %}

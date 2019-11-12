@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block title %}
+Documenter
+{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+
+
+<div class="row">
+    <div class="col-3 pt-3 px-0 flex-fill bg-dark text-light" >
+
+        <p class="px-2" style="font-weight: bold; font-size: 8pt;">
+            There are {{user.assigned_user.all.count}} documents to review. Select a document below or click 'NEXT' above to begin reviewing.
+            
+        </p>    
+    
+        <h6 class="px-2">Document Queue:</h6>       
+        
+        <div class="list-group my-2 mx-0">
+        
+        {% for doc in user.assigned_user.all %}
+        <a href="{% url 'rate-doc' pk=doc.pk %}" class="list-group-item px-1 py-1 list-group-item-action bg-dark text-light rounded-0 border-light border-left-0 border-right-0">         
+          <div class="row">
+            {% if doc.rated %}
+            <span class="m-auto col-1 glyphicon glyphicon-check h-100"></span>
+            {% else %}
+            <span class="m-auto col-1 glyphicon glyphicon-unchecked h-100"></span>
+            {% endif %}            
+            <div class="col-11 d-flex-column py-0 w-100">
+                <div class="d-flex py-0">
+                    <p style="font-family: 'Times New Roman', Times, serif; font-size: 12pt" class="flex-shrink-1 mx-0 my-0 text-truncate">{{doc.report.title|title}}</p>
+                    <span style="font-size: 8pt; border-bottom-left-radius: 1em; border: 1px solid #888888; border-top: none; border-right: none;" class="flex-shrink-0 px-1 pb-0 my-0 ml-auto">{{doc.modified|naturaltime}}</span>
+                </div>              
+              <p class="my-0 py-0 text-truncate" style="font-size: 8pt"><span style="font-weight: bold;">({{doc.report.media_org}})</span> {{doc.report.author_list}}</p>
+            </div>
+          </div>  
+        </a>
+        {% empty %}
+        
+        No Documents to Review.
+        
+        {% endfor %}
+        
+        </div>
+    </div>
+</div>
+
+<div id="preview-box" style="overflow-y: auto; padding-top: 45px; z-index: 100;" class="col-9 h-100 fixed-top ml-auto d-flex flex-column justify-content-center">
+    <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+        <div class="d-inline-flex flex-column border border-dark p-5" style="border-width: 3pt !important;">
+            <span style="font-size: 80pt; font-family: 'Lucida Console', Monaco, monospace;">Documenter</span>
+            <span class="align-self-end" style="font-size: 20pt; font-family: 'Lucida Console', Monaco, monospace;">get what you need</span>
+        </div>
+    </div>
+</div>
+
+
+{% else %}
+<div class="w-100 h-100 d-flex align-items-center justify-content-center">
+    <div class="d-inline-flex flex-column border border-dark p-5" style="border-width: 3pt !important;">
+        <span style="font-size: 80pt; font-family: 'Lucida Console', Monaco, monospace;">Documenter</span>
+        <span class="align-self-end" style="font-size: 20pt; font-family: 'Lucida Console', Monaco, monospace;">get what you need</span>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

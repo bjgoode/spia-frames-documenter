@@ -1,0 +1,20 @@
+{% load crispy_forms_tags %}
+
+
+{{form.media.js}}
+{{form.media.css}}
+
+
+{{form|crispy}}
+
+<script type="text/javascript" >
+$(document).ready(function () {    
+    $('.select').select2({
+        tags: true,
+        placeholder: 'Select or Type New Entry.',
+    });
+    
+	$(".select2-container").css({'width': '100%' });
+	
+});
+</script>

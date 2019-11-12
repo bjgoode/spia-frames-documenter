@@ -1,0 +1,20 @@
+html {
+    height: 100%;
+    }
+
+body {
+	height: 100%;
+	font-family: Open Sans,Arial,sans-serif;
+	background-image: url('/static/img/background.jpg');
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+.container-fluid {
+	/*background-color: #ffffffaa;*/
+	padding-top: 55px;
+}
+
+.navbar-brand{
+    font-family: 'Lucida Console', Monaco, monospace;
+}

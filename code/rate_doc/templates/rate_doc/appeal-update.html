@@ -1,0 +1,53 @@
+{% load crispy_forms_tags %}
+
+
+{{form.media.js}}
+{{form.media.css}}
+
+
+{{form|crispy}}
+
+<script type="text/javascript" >
+$(document).ready(function () {    
+    $('#id_frame_input').select2({
+        tags: true,
+        placeholder: 'Select or Type New Entry.',
+        multiple: true,
+    });
+    
+    $('#id_source').select2({
+        tags: false,
+        placeholder: 'Select source from document.',
+        multiple: true,
+    });
+    
+    
+    {% for f in view.frames %}
+        var newOption = new Option('{{f}}', '{{f}}', false, false);
+        $('#id_frame_input').append(newOption);
+    {% endfor %}
+    
+    $('#id_source').empty();
+    {% for s in view.sources %}
+        var newOption = new Option('{{s}}', '{{s.pk}}', false, false);
+        $('#id_source').append(newOption);
+    {% endfor %}
+    
+    
+    $(".select").val('').trigger('change');
+	$(".select2-container").css({'width': '100%' });
+	
+	{% for k, vs in view.initial_values.items %}
+	   console.log('{{vs}}');
+	   console.log('{{k}}');
+	   var val = [ 
+            {% for v in vs %}	   
+	       '{{v}}',                  
+	        {% endfor %}            
+	   ]
+	   console.log(val);
+	   $('#id_{{k}}').val(val).trigger('change');
+	{% endfor %}
+	console.log($('#id_source'));
+});
+</script>
