@@ -60,6 +60,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -142,14 +143,17 @@ USE_TZ = True
 STATICFILES_DIRS = [
     os.path.join(PROJECT_DIR, 'static'),
 ]
-STATIC_URL = '/static/'
+
+WHITENOISE_STATIC_PREFIX = '/static/'
+STATIC_URL = '/documenter' + WHITENOISE_STATIC_PREFIX
 
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'djangobower.finders.BowerFinder',
 ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+#STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
 BOWER_INSTALLED_APPS = [
     'jquery',
@@ -161,7 +165,7 @@ BOWER_INSTALLED_APPS = [
     'select2',
     'Scrollify',
 ]
-BOWER_PATH = os.path.join(BASE_DIR, 'node_modules/bower/bin/bower')
+BOWER_PATH = os.path.join(BASE_DIR, '../node_modules/bower/bin/bower')
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/login'

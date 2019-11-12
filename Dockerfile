@@ -10,9 +10,11 @@ RUN apt-get -y update &&\
 RUN apt-get -y install nodejs npm
 RUN echo '{"allow_root": true}' > /root/.bowerrc
 
-COPY ./code .
+COPY ./code ./code
 
 RUN npm install bower
+
+WORKDIR ./code
 
 RUN pip install -r requirements.txt
 
@@ -20,6 +22,6 @@ RUN pip install -r requirements.txt
 
 RUN ./manage.py bower_install
 RUN ./manage.py migrate
-RUN ./manage.py collectstatic
+RUN ./manage.py collectstatic --noinput
 
 EXPOSE 8000

@@ -20,6 +20,9 @@ lorem = "*"
 django-select2 = "*"
 beautifulsoup4 = "*"
 gunicorn = "*"
+jupyterlab = "*"
+grep = "*"
+lazyme = "*"
 
 [requires]
 python_version = "3.6"
