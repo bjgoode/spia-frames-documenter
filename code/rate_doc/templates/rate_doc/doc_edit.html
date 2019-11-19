@@ -217,7 +217,7 @@ function showReport() {
 var update = false;
 
 function addAffiliation(val, update) {
-    $('.updating:not(.affil-highight)').removeClass('updating').addClass('saved');
+    $('.updating:not(.affil-highlight)').removeClass('updating').addClass('saved');
     $('.edit:not(.affil)').hide(function () {
     	$('.home:not(.affil)').show();
     });
@@ -249,7 +249,7 @@ function addAffiliation(val, update) {
 }
 
 function updateAffiliation(pk) {
-    $('.updating:not(.affil-highight)').removeClass('updating').addClass('saved');
+    $('.updating:not(.affil-highlight)').removeClass('updating').addClass('saved');
     $('.edit:not(.affil)').hide(function () {
     	$('.home:not(.affil)').show();
     });
@@ -546,6 +546,7 @@ function copyDocumentText(e){
     var span = document.createElement('span');
 
     if(e === 'Affiliation'){
+        console.log(update)
         addAffiliation(highlightedText, update);
         $(span).addClass('affil-highlight highlight p-1 new rounded affil-'+highlightedText.hashCode());    
     }
