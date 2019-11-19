@@ -8,3 +8,4 @@
 tmp
 *staticfiles
 *.ipynb_checkpoints
+docs/*
