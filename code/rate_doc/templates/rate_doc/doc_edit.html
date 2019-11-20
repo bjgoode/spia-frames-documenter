@@ -10,10 +10,10 @@
 
 <div class="bg-dark text-light rounded" id="optionBox" style="display: none; z-index: 90000;">
   <h6>Label text as:</h6>
-  <button onClick="copyDocumentText('Affiliation')" class="btn btn-primary btn-sm" type="button"><b>Affiliation</b></button>
-  <button onClick="copyDocumentText('Source')" class="btn btn-primary btn-sm" type="button"><b>Source</b></button>
-  <button onClick="copyDocumentText('Appeal')" class="btn btn-primary btn-sm" type="button"><b>Appeal</b></button>
-  <button onClick="copyDocumentText('Action')" class="btn btn-primary btn-sm" type="button"><b>Action</b></button>
+  <button onClick="copyDocumentText('Affiliation')" class="affil add-btn btn btn-primary btn-sm" type="button"><b><span style="display: none;">Update </span>Affiliation</b></button>
+  <button onClick="copyDocumentText('Source')" class="source add-btn btn btn-primary btn-sm" type="button"><b><span style="display: none;">Update </span>Source</b></button>
+  <button onClick="copyDocumentText('Appeal')" class="appeal add-btn add-btn btn btn-primary btn-sm" type="button"><b><span style="display: none;">Update </span>Appeal</b></button>
+  <button onClick="copyDocumentText('Action')" class="action add-btn btn btn-primary btn-sm" type="button"><b><span style="display: none;">Update </span>Action</b></button>
 </div>
 
 <div id="report-box" style="overflow-y: auto; padding-top: 45px; z-index: 100;" class="col-8 h-100 fixed-top ml-auto d-flex-inline justify-content-center bg-secondary">
@@ -157,7 +157,7 @@ String.prototype.hashCode = function() {
 function updateReviewHTML(){
     $.ajax({
         type: "GET",
-        url: "/rate_doc/{{doc.id}}/report/html/",
+        url: "{% url 'report-html' pk=doc.id %}",
         success: function(data){
             $('#report-html').html(data);
         }
@@ -253,12 +253,9 @@ function updateAffiliation(pk) {
     $('.edit:not(.affil)').hide(function () {
     	$('.home:not(.affil)').show();
     });
-    $('.affil.home').fadeOut(function () {
-        $('.affil.edit').fadeIn();	
-    }); 
-    $('.affil.home').fadeOut(function () {
-        $('.affil.edit').fadeIn();	
-    });  
+    $('.affil.home, .add-btn').fadeOut(function () {
+        $('.affil.edit, .affil.add-btn, .affil.add-btn span').fadeIn();	
+    });   
     $.ajax({
         type: "GET",
         url: "report-affiliation/" + pk + "/update/",
@@ -331,6 +328,8 @@ function showAffiliations() {
     $('.affil.edit').fadeOut(function () {
         $('.affil.home').fadeIn();	
     });
+    $('.add-btn').show();
+	$('.add-btn span').hide();
     updateReviewHTML();
     update = false;
 }
@@ -371,8 +370,8 @@ function updateSource(pk) {
     $('.edit:not(.source)').hide(function () {
     	$('.home:not(.source)').show();
     });
-    $('.source.home').fadeOut(function () {
-       $('.source.edit').fadeIn();	
+    $('.source.home, .add-btn').fadeOut(function () {
+       $('.source.edit, .source.add-btn, .source.add-btn span').fadeIn();	
     });   
     $.ajax({
         type: "GET",
@@ -397,6 +396,8 @@ function showSources() {
     $('.source.edit').fadeOut(function () {
        $('.source.home').fadeIn();	
     });
+    $('.add-btn').show();
+	$('.add-btn span').hide();
     updateReviewHTML();
     update = false;
 }
@@ -437,8 +438,8 @@ function updateAppeal(pk) {
     $('.edit:not(.appeal)').hide(function () {
     	$('.home:not(.appeal)').show();
     });
-    $('.appeal.home').fadeOut(function () {
-       $('.appeal.edit').fadeIn();	
+    $('.appeal.home, .add-btn').fadeOut(function () {
+       $('.appeal.edit, .appeal.add-btn, .appeal.add-btn span').fadeIn();	
     });  
     $.ajax({
         type: "GET",
@@ -464,6 +465,8 @@ function showAppeals() {
    	$('.appeal.edit').fadeOut(function () {
        $('.appeal.home').fadeIn();	
     });
+   	$('.add-btn').show();
+	$('.add-btn span').hide();
     updateReviewHTML();
     update = false;
 }
@@ -505,8 +508,8 @@ function updateAction(pk) {
     $('.edit:not(.action)').hide(function () {
     	$('.home:not(.action)').show();
     });
-    $('.action.home').fadeOut(function () {
-       $('.action.edit').fadeIn();	
+    $('.action.home, .add-btn').fadeOut(function () {
+       $('.action.edit, .action.add-btn, .action.add-btn span').fadeIn();	
     });  
     $.ajax({
         type: "GET",
@@ -532,6 +535,8 @@ function showAction() {
     $('.action.edit').fadeOut(function () {
        $('.action.home').fadeIn();	
     });
+   	$('.add-btn').show();
+	$('.add-btn span').hide();
     updateReviewHTML();
     update = false;
 }
@@ -605,6 +610,8 @@ $(document).ready(function () {
 	   	   $('.affil.edit').fadeOut(function () {
                $('.affil.home').fadeIn();	
            });
+           $('.add-btn').show();
+	       $('.add-btn span').hide();
 	   	   update = false;
 	   },
 	});
@@ -618,6 +625,8 @@ $(document).ready(function () {
 	   	   $('.source.edit').fadeOut(function () {
                $('.source.home').fadeIn();	
            });
+           $('.add-btn').show();
+	       $('.add-btn span').hide();
 	   	   update = false;
 	   },
 	});
@@ -632,6 +641,8 @@ $(document).ready(function () {
 	   	   $('.appeal.edit').fadeOut(function () {
                $('.appeal.home').fadeIn();	
            });
+           $('.add-btn').show();
+	       $('.add-btn span').hide();
 	   	   update = false;
 	   },
 	});
@@ -645,6 +656,8 @@ $(document).ready(function () {
 	   	   $('.action.edit').fadeOut(function () {
                $('.action.home').fadeIn();	
            });
+           $('.add-btn').show();
+	       $('.add-btn span').hide();
 	   	   update = false;
 	   },
 	});
