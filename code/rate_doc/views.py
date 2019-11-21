@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormVi
 from django.utils import timezone
 from django.views.generic import ListView, DetailView
 
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, HttpResponseForbidden
 from django.urls import reverse, reverse_lazy
 
 import csv
@@ -347,16 +347,69 @@ class UpdateAppeal(UpdateView):
             'source': Appeal.objects.get(pk=pk).source.values_list('pk', flat=True),
         }  
         return dictionary
+
     
 class ReviewDetail(DetailView):
     model = Review
     context_object_name = 'doc'
     
+    
+class DeleteAffiliation(DeleteView):
+    model = ReportSourceAffiliation
+    pk_url_kwarg = 'affil_pk'
+    template_name = 'rate_doc/confirm-delete.html'
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            html_object = ReportSourceAffiliation.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
+            super(DeleteAffiliation, self).delete(
+                request, *args, **kwargs
+            )
+            soup = bs4.BeautifulSoup(html_object.review.review_html)
+            span = soup.find('span', class_=html_object.span_class)
+            if span:
+                span.unwrap()
+                html_object.review.review_html = str(soup)
+                html_object.review.save() 
+            return HttpResponseRedirect(self.get_success_url())
+            
+        except models.ProtectedError as e:
+            # Return the appropriate response
+            return HttpResponseForbidden()    
+    
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+        
+    def post(self, request, *args, **kwargs):  
+        return super().post(request, *args, **kwargs)
+        
+    def get_success_url(self):
+        return reverse_lazy('list-affil', kwargs={'pk':self.kwargs.get('pk')}) 
+
+
 class DeleteSource(DeleteView):
     model = ReportSource
     success_url = '/'
     pk_url_kwarg = 'source_pk'
     template_name = 'rate_doc/confirm-delete.html'
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            html_object = ReportSource.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
+            super(DeleteSource, self).delete(
+                request, *args, **kwargs
+            )
+            soup = bs4.BeautifulSoup(html_object.review.review_html)
+            span = soup.find('span', class_=html_object.span_class)
+            if span:
+                span.unwrap()
+                html_object.review.review_html = str(soup)
+                html_object.review.save() 
+            return HttpResponseRedirect(self.get_success_url())
+            
+        except models.ProtectedError as e:
+            # Return the appropriate response
+            return HttpResponseForbidden()      
     
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
@@ -364,45 +417,32 @@ class DeleteSource(DeleteView):
     def post(self, request, *args, **kwargs): 
         return super().post(request, *args, **kwargs)
         
-    def get_success_url(self):
-        rs = ReportSource.objects.get(pk=self.kwargs.get('source_pk'))
-        soup = bs4.BeautifulSoup(rs.review.review_html)
-        span = soup.find('span', class_=rs.span_class)
-        if span:
-            span.unwrap()
-            rs.review.review_html = str(soup)
-            rs.review.save()
-            
-        return reverse_lazy('list-source', kwargs={'pk':self.kwargs.get('pk')})
-
-    
-    
-class DeleteAffiliation(DeleteView):
-    model = ReportSourceAffiliation
-    pk_url_kwarg = 'affil_pk'
-    template_name = 'rate_doc/confirm-delete.html'
-    
-    def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
-        
-    def post(self, request, *args, **kwargs):  
-        return super().post(request, *args, **kwargs)
-        
-    def get_success_url(self):
-        aff = ReportSourceAffiliation.objects.get(pk=self.kwargs.get('affil_pk'))
-        soup = bs4.BeautifulSoup(aff.review.review_html)
-        span = soup.find('span', class_=aff.span_class)
-        if span:
-            span.unwrap()
-            aff.review.review_html = str(soup)
-            aff.review.save()
-        return reverse_lazy('list-affil', kwargs={'pk':self.kwargs.get('pk')}) 
+    def get_success_url(self):            
+        return reverse_lazy('list-source', kwargs={'pk':self.kwargs.get('pk')}) 
     
 
 class DeleteAppeal(DeleteView):
     model = Appeal
     pk_url_kwarg = 'appeal_pk'
     template_name = 'rate_doc/confirm-delete.html'
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            html_object = Appeal.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
+            super(DeleteAppeal, self).delete(
+                request, *args, **kwargs
+            )
+            soup = bs4.BeautifulSoup(html_object.review.review_html)
+            span = soup.find('span', class_=html_object.span_class)
+            if span:
+                span.unwrap()
+                html_object.review.review_html = str(soup)
+                html_object.review.save() 
+            return HttpResponseRedirect(self.get_success_url())
+            
+        except models.ProtectedError as e:
+            # Return the appropriate response
+            return HttpResponseForbidden()      
     
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
@@ -411,21 +451,31 @@ class DeleteAppeal(DeleteView):
         return super().post(request, *args, **kwargs)
         
     def get_success_url(self):
-        html_object = Appeal.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
-        soup = bs4.BeautifulSoup(html_object.review.review_html)
-        span = soup.find('span', class_=html_object.span_class)
-        if span:
-            span.unwrap()
-            html_object.review.review_html = str(soup)
-            html_object.review.save() 
         return reverse_lazy('list-appeal', kwargs={'pk':self.kwargs.get('pk')})
     
     
 class DeleteReportAction(DeleteView):
-
     model = ReportAction
     pk_url_kwarg = 'action_pk'
     template_name = 'rate_doc/confirm-delete.html'
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            html_object = ReportAction.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
+            super(DeleteReportAction, self).delete(
+                request, *args, **kwargs
+            )
+            soup = bs4.BeautifulSoup(html_object.review.review_html)
+            span = soup.find('span', class_=html_object.span_class)
+            if span:
+                span.unwrap()
+                html_object.review.review_html = str(soup)
+                html_object.review.save() 
+            return HttpResponseRedirect(self.get_success_url())
+            
+        except models.ProtectedError as e:
+            # Return the appropriate response
+            return HttpResponseForbidden()      
     
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
@@ -434,14 +484,6 @@ class DeleteReportAction(DeleteView):
         return super().post(request, *args, **kwargs)
            
     def get_success_url(self):
-        html_object = ReportAction.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
-        soup = bs4.BeautifulSoup(html_object.review.review_html)
-        span = soup.find('span', class_=html_object.span_class)
-        
-        if span:
-            span.unwrap()
-            html_object.review.review_html = str(soup)
-            html_object.review.save()
         return reverse_lazy('list-action', kwargs={'pk':self.kwargs.get('pk')})
     
 
