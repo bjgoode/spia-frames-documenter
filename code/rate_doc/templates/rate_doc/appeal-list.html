@@ -1,11 +1,13 @@
-<ul class="list-group mb-1">
+<ul class="report-item-list list-group mb-1">
 {% for appeal in doc.appeal_set.all %}
     <li class="list-group-item list-group-item-light d-flex">{{appeal}}
         {% if not doc.rated %}
-            <a class="ml-auto px-1" href="#appeal-detail" onclick="updateAppeal({{appeal.pk}})"><span class="ml-auto px-1 glyphicon glyphicon-pencil"></span></a>
-            <a class="px-1" href="#appeal-detail" onclick="deleteAppeal({{appeal.pk}},'{{appeal.span_class}}');" ><span class="px-1 glyphicon glyphicon-trash"></span></a>
+            <div class="ml-auto px-1" href="#appeal-detail" onclick="updateAppeal({{appeal.pk}})"><span class="ml-auto px-1 glyphicon glyphicon-pencil"></span></div>
+            <div class="px-1" href="#appeal-detail" onclick="deleteAppeal({{appeal.pk}},'{{appeal.span_class}}');" ><span class="px-1 glyphicon glyphicon-trash"></span></div>
         {% endif %}
+        <span class="d-none associate-span">{{appeal.span_class}}</span>
     </li>
+
 {% empty %}
     No Document Appeals Identified.
 {% endfor %}

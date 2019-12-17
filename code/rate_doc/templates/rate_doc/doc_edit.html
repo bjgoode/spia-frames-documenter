@@ -39,7 +39,9 @@
                     <button type="submit" style="display:none;" class="report btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
                     <button onClick='showReport();' style="display:none;" class="report btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center" type="button">Cancel</button>
                 </div>
-            
+                <div class="alert alert-danger report-alert" role="alert">
+                    This is a primary alert—check it out!
+                </div>
                 <div id="report-home">
                     {% include 'rate_doc/report-detail.html' %}
                 </div>
@@ -61,6 +63,9 @@
                     <button type="submit" style="display:none;" class="affil edit btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
                     <button type="button" style="display:none;" onClick='showAffiliations();' class="affil edit btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
                 </div>
+                <div class="alert alert-danger affil-alert" role="alert">
+                    This is a primary alert—check it out!
+                </div>
                 <div id="affil-home" class="affil home">
                     {% include 'rate_doc/affil-list.html' %}
                 </div>
@@ -81,6 +86,9 @@
                     <button type="button" onClick='addSource();' class="source home btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
                     <button type="submit" style="display:none;" class="source edit btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
                     <button type="button" style="display:none;" onClick='showSources();' class="source edit btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
+                </div>
+                <div class="alert alert-danger source-alert" role="alert">
+                    This is a primary alert—check it out!
                 </div>
                 <div id="reportSource-home" class="source home">
                     {% include 'rate_doc/source-list.html' %}    
@@ -104,6 +112,9 @@
                     <button type="button" onClick='addAppeal();' class="appeal home btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Add</button>
                     <button type="submit" style="display:none;" class="appeal edit btn btn-primary btn-sm pt-0 pb-0 m-1 align-self-center">Save</button>
                     <button type="button" style="display:none;" onClick='showAppeals();' class="appeal edit btn btn-secondary btn-sm pt-0 pb-0 m-1 align-self-center">Cancel</button>
+                </div>
+                <div class="alert alert-danger appeal-alert" role="alert">
+                    This is a primary alert—check it out!
                 </div>
                 <div id="appeal-home" class="appeal home">
                     {% include 'rate_doc/appeal-list.html' %}                
@@ -283,6 +294,11 @@ function deleteAffiliation(pk,sc) {
         	$('#affil-home').html(data);
         	console.log($('.'+sc));
         	$('.'+sc).contents().unwrap();
+        },
+        statusCode: {
+            403: function() { 
+                $('.affil-alert').html("The item you are trying to delete has dependencies. Please delete them first.")
+            },
         },
     });
 }
@@ -663,6 +679,20 @@ $(document).ready(function () {
 	});
 });
 
+// Hover Functions for List Items.
+    $(document).on({
+        mouseenter: function(){
+            $(this).addClass('bg-info text-light font-weight-bold');
+            var span_class = $(this).children('span').text();
+            $('.'+span_class).addClass('border border-info border-5');
+            },
+        mouseleave: function(){
+            $(this).removeClass('bg-info text-light font-weight-bold');
+    	   var span_class = $(this).children('span').text();
+            $('.'+span_class).removeClass('border border-info border-5');
+            }, 
+        }, '.report-item-list .list-group-item');
+
 </script>
 
 {% endblock %}
@@ -670,6 +700,11 @@ $(document).ready(function () {
 {% block extra_css %}
 
 <style type="text/css">
+
+    .border-5 {
+        border-width: 5px !important;    
+    }
+
     input {
         width: 100%;    
     }

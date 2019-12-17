@@ -1,13 +1,17 @@
-<ul class="list-group mb-1 accordion" id="affil-accordion">
+<ul class="list-group mb-1 accordion report-item-list" id="affil-accordion">
 {% for a in doc.reportsourceaffiliation_set.all %}
     <li class="list-group-item list-group-item-light d-flex" data-toggle="collapse" data-target="#li-{{a.pk}}" style="cursor: pointer;">{{a}}
         {% if not doc.rated %}        
-            <a class="ml-auto px-1" href="#" onclick="updateAffiliation({{a.pk}})"><span class="glyphicon glyphicon-pencil"></span></a>
-            <a class="px-1" href="#affiliation-detail" onclick="deleteAffiliation({{a.pk}},'{{a.span_class}}');" ><span class="glyphicon glyphicon-trash"></span></a>
+            <div class="ml-auto px-1" onclick="updateAffiliation({{a.pk}})"><span class="glyphicon glyphicon-pencil"></span></div>
+            <div class="px-1" onclick="deleteAffiliation({{a.pk}},'{{a.span_class}}');" ><span class="glyphicon glyphicon-trash"></span></div>
         {% endif %}
+        <span class="d-none associate-span">{{a.span_class}}</span>
     </li>
+    {% comment %}
     <li class="collapse list-group-item list-group-item-dark" id="li-{{a.pk}}" data-parent="#affil-accordion">Details For: {{a}}</li>
+    {% endcomment %}
 {% empty %}
     No Document Affiliations Identified.
 {% endfor %}
 </ul>
+
