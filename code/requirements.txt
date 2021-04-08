@@ -4,7 +4,7 @@ beautifulsoup4==4.8.1
 bleach==3.1.0
 decorator==4.4.1
 defusedxml==0.6.0
-Django==2.2.7
+Django==2.2.20
 django-appconf==1.0.3
 django-auth-ldap==2.0.0
 django-bower==5.2.0
